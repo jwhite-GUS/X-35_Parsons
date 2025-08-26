@@ -50,8 +50,8 @@ def main():
     logging.basicConfig(level=logging.DEBUG, handlers=[file_handler, console_handler])
 
     # Log run configuration
+    logging.info(f"Run directory: {run_dirs['base'].absolute()}")
     logging.info(f"Starting optimization run: {args.run_name}")
-    logging.info(f"Results directory: {run_dirs['base']}")
     
     # Set random seed if provided
     if args.seed is not None:

@@ -29,7 +29,47 @@ except ImportError:
 from airship_opt.types import Params
 from airship_opt.geometry import build_coefs, evaluate_shape
 
-def resolve_output_dirs(result_path: str) -> tuple[Path, Path]:
+def _resolve_result_path(path: Path) -> Path:
+    """
+    Resolve various input formats to the actual result.json file path.
+    
+    Args:
+        path: Input path (could be directory, pointer file, or direct JSON)
+        
+    Returns:
+        Resolved Path to result.json file
+    """
+    path = Path(path)
+    
+    # Case 1: Direct JSON file
+    if path.suffix == '.json':
+        return path
+    
+    # Case 2: Pointer file (.txt)
+    if path.suffix == '.txt':
+        try:
+            content = path.read_text().strip()
+            content_path = Path(content)
+            
+            # If content is a directory, append artifacts/result.json
+            if content_path.is_dir():
+                return content_path / 'artifacts' / 'result.json'
+            # If content is already a JSON path, use it
+            elif content_path.suffix == '.json':
+                return content_path
+            else:
+                raise ValueError(f"Invalid content in pointer file: {content}")
+        except Exception as e:
+            raise ValueError(f"Error reading pointer file {path}: {e}")
+    
+    # Case 3: Directory (assume run directory)
+    if path.is_dir():
+        return path / 'artifacts' / 'result.json'
+    
+    # Case 4: Legacy file or other
+    return path
+
+def resolve_output_dirs(result_path: Path) -> tuple[Path, Path]:
     """
     Resolve output directories for plots and tables based on result path.
     
@@ -39,8 +79,6 @@ def resolve_output_dirs(result_path: str) -> tuple[Path, Path]:
     Returns:
         Tuple of (figures_dir, tables_dir)
     """
-    result_path = Path(result_path)
-    
     # Handle legacy case (root-level files)
     if result_path.parent == Path('.'):
         warnings.warn(
@@ -210,26 +248,20 @@ Geometry:
 
 def main():
     ap = argparse.ArgumentParser(description="Generate plots from optimization results")
-    ap.add_argument("--result", default="result.json", help="Input JSON result file")
+    ap.add_argument("--result", default="result.json", help="Input JSON result file, run directory, or latest pointer")
     ap.add_argument("--out-dir", help="Output directory (overrides automatic directory detection)")
     ap.add_argument("--out-prefix", default="fig", help="Output file prefix")
     ap.add_argument("--no-plots", action="store_true", help="Skip plot generation")
     args = ap.parse_args()
 
-    result_path = args.result
+    try:
+        result_path = _resolve_result_path(args.result)
+        print(f"Resolved result path: {result_path}")
+    except Exception as e:
+        print(f"Error resolving result path: {e}")
+        sys.exit(1)
     
-    # Handle latest pointer files
-    if result_path.endswith('.txt') and 'latest__' in result_path:
-        try:
-            with open(result_path, 'r') as f:
-                actual_path = f.read().strip()
-            result_path = os.path.join(actual_path, 'artifacts', 'result.json')
-            print(f"Using latest result: {result_path}")
-        except Exception as e:
-            print(f"Error reading latest pointer: {e}")
-            sys.exit(1)
-    
-    if not os.path.exists(result_path):
+    if not result_path.exists():
         print(f"Error: Result file '{result_path}' not found")
         sys.exit(1)
 
@@ -241,6 +273,11 @@ def main():
         tables_dir.mkdir(parents=True, exist_ok=True)
     else:
         figures_dir, tables_dir = resolve_output_dirs(result_path)
+    
+    # Get run directory for manifest refresh
+    run_dir = None
+    if 'artifacts' in str(result_path):
+        run_dir = result_path.parent.parent
 
     # Load the result file
     with open(result_path, "r") as f:
@@ -262,6 +299,12 @@ def main():
             args.out_prefix
         )
         
+        # Refresh manifest if we're in a run directory
+        if run_dir is not None:
+            from airship_opt.io_viz import write_manifest
+            write_manifest(run_dir)
+            print(f"Updated manifest: {run_dir}/manifest.json")
+        
         print(f"Generated outputs in:")
         print(f"  Figures: {figures_dir}")
         print(f"  Tables:  {tables_dir}")
@@ -271,6 +314,7 @@ def main():
         print(f"  {figures_dir}/{args.out_prefix}_objective.png")
         print(f"  {figures_dir}/{args.out_prefix}_volerr.png")
         print(f"  {tables_dir}/summary.txt")
+        print(f"  {tables_dir}/summary.csv")
 
 if __name__ == "__main__":
     main()
