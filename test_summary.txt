@@ -1,0 +1,24 @@
+
+Airship Hull Optimization Results
+================================
+
+Parameters:
+  rn (nose curvature): 0.7817
+  fr (fineness ratio): 5.0832
+  xm (max diameter):   0.4988
+  k (curvature):       0.1773
+  Xi (inflection):     0.8021
+  n (radius ratio):    0.6623
+  S (slope):           2.3429
+  t (tail radius):     0.1806
+
+Results:
+  Drag Coefficient:    0.001278
+  Volume:              0.212274
+  Objective:           8.985369e+01
+  Iterations:          6
+
+Geometry:
+  Max diameter at:     0.499L
+  Inflection at:       0.802L
+  Tail radius:         0.181D/2
