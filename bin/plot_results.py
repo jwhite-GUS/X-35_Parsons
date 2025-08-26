@@ -11,6 +11,9 @@ import math
 import json
 import sys
 import os
+import warnings
+import csv
+from pathlib import Path
 
 # Add the parent directory to the path so we can import airship_opt
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
@@ -26,13 +29,47 @@ except ImportError:
 from airship_opt.types import Params
 from airship_opt.geometry import build_coefs, evaluate_shape
 
-def plot_radius_and_slope(params: Params, out_prefix: str, n: int = 600):
+def resolve_output_dirs(result_path: str) -> tuple[Path, Path]:
+    """
+    Resolve output directories for plots and tables based on result path.
+    
+    Args:
+        result_path: Path to result.json file
+        
+    Returns:
+        Tuple of (figures_dir, tables_dir)
+    """
+    result_path = Path(result_path)
+    
+    # Handle legacy case (root-level files)
+    if result_path.parent == Path('.'):
+        warnings.warn(
+            "Using root-level result file. Consider using results/*/artifacts/result.json "
+            "for better organization.",
+            UserWarning
+        )
+        return Path('.'), Path('.')
+    
+    # Handle new directory structure
+    if 'artifacts' in str(result_path):
+        run_dir = result_path.parent.parent
+        figures_dir = run_dir / 'figures'
+        tables_dir = run_dir / 'tables'
+        figures_dir.mkdir(exist_ok=True)
+        tables_dir.mkdir(exist_ok=True)
+        return figures_dir, tables_dir
+    
+    # Default case
+    return Path('.'), Path('.')
+
+def plot_radius_and_slope(params: Params, figures_dir: Path, prefix: str = "fig", n: int = 600):
     """
     Generate radius and slope plots for the hull shape.
     
     Args:
         params: Hull parameters
-        out_prefix: Output file prefix
+        figures_dir: Directory to save figure files
+        prefix: Output file prefix
         n: Number of sample points
     """
     C = build_coefs(params)
@@ -54,7 +91,7 @@ def plot_radius_and_slope(params: Params, out_prefix: str, n: int = 600):
     plt.legend(fontsize=10)
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(f"{out_prefix}_radius.png", dpi=200, bbox_inches='tight')
+    plt.savefig(figures_dir / f"{prefix}_radius.png", dpi=200, bbox_inches='tight')
     plt.close()
 
     # Slope plot
@@ -69,10 +106,10 @@ def plot_radius_and_slope(params: Params, out_prefix: str, n: int = 600):
     plt.legend(fontsize=10)
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(f"{out_prefix}_slope.png", dpi=200, bbox_inches='tight')
+    plt.savefig(figures_dir / f"{prefix}_slope.png", dpi=200, bbox_inches='tight')
     plt.close()
 
-def plot_convergence(history, vol_target: float, out_prefix: str):
+def plot_convergence(history, vol_target: float, figures_dir: Path, prefix: str = "fig"):
     """
     Generate convergence plots for objective and volume error.
     
@@ -94,7 +131,7 @@ def plot_convergence(history, vol_target: float, out_prefix: str):
     plt.legend(fontsize=10)
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(f"{out_prefix}_objective.png", dpi=200, bbox_inches='tight')
+    plt.savefig(figures_dir / f"{prefix}_objective.png", dpi=200, bbox_inches='tight')
     plt.close()
 
     # Volume error convergence
@@ -107,16 +144,16 @@ def plot_convergence(history, vol_target: float, out_prefix: str):
     plt.legend(fontsize=10)
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(f"{out_prefix}_volerr.png", dpi=200, bbox_inches='tight')
+    plt.savefig(figures_dir / f"{prefix}_volerr.png", dpi=200, bbox_inches='tight')
     plt.close()
 
-def create_summary_table(data: dict, out_prefix: str):
+def create_summary_table(data: dict, tables_dir: Path):
     """
     Create a summary table of the optimization results.
     
     Args:
         data: Loaded result data
-        out_prefix: Output file prefix
+        tables_dir: Directory to save the summary file
     """
     params = data["params"]
     summary = f"""
@@ -145,42 +182,95 @@ Geometry:
   Tail radius:         {params['t']:.3f}D/2
 """
     
-    with open(f"{out_prefix}_summary.txt", "w") as f:
+    with open(tables_dir / "summary.txt", "w") as f:
         f.write(summary)
+    
+    # Create CSV summary for machine-readable format
+    csv_data = [
+        ["Parameter", "Value", "Units"],
+        ["cd_te", f"{data['cd']:.6f}", "dimensionless"],
+        ["volume", f"{data['volume']:.6f}", "L³"],
+        ["objective", f"{data['objective']:.6e}", "dimensionless"],
+        ["iterations", str(data['meta'].get('iterations', 'unknown')), "count"],
+        ["rn", f"{params['rn']:.4f}", "dimensionless"],
+        ["fr", f"{params['fr']:.4f}", "L/D"],
+        ["xm", f"{params['xm']:.4f}", "L"],
+        ["k", f"{params['k']:.4f}", "dimensionless"],
+        ["Xi", f"{params['Xi']:.4f}", "L"],
+        ["n", f"{params['n']:.4f}", "dimensionless"],
+        ["S", f"{params['S']:.4f}", "dimensionless"],
+        ["t", f"{params['t']:.4f}", "D/2"]
+    ]
+    
+    with open(tables_dir / "summary.csv", "w", newline='') as f:
+        writer = csv.writer(f)
+        writer.writerows(csv_data)
     
     print(summary)
 
 def main():
     ap = argparse.ArgumentParser(description="Generate plots from optimization results")
     ap.add_argument("--result", default="result.json", help="Input JSON result file")
+    ap.add_argument("--out-dir", help="Output directory (overrides automatic directory detection)")
     ap.add_argument("--out-prefix", default="fig", help="Output file prefix")
     ap.add_argument("--no-plots", action="store_true", help="Skip plot generation")
     args = ap.parse_args()
 
-    if not os.path.exists(args.result):
-        print(f"Error: Result file '{args.result}' not found")
+    result_path = args.result
+    
+    # Handle latest pointer files
+    if result_path.endswith('.txt') and 'latest__' in result_path:
+        try:
+            with open(result_path, 'r') as f:
+                actual_path = f.read().strip()
+            result_path = os.path.join(actual_path, 'artifacts', 'result.json')
+            print(f"Using latest result: {result_path}")
+        except Exception as e:
+            print(f"Error reading latest pointer: {e}")
+            sys.exit(1)
+    
+    if not os.path.exists(result_path):
+        print(f"Error: Result file '{result_path}' not found")
         sys.exit(1)
 
-    with open(args.result, "r") as f:
+    # Determine output directories
+    if args.out_dir:
+        figures_dir = Path(args.out_dir)
+        tables_dir = figures_dir.parent / 'tables' if 'figures' in str(figures_dir) else figures_dir
+        figures_dir.mkdir(parents=True, exist_ok=True)
+        tables_dir.mkdir(parents=True, exist_ok=True)
+    else:
+        figures_dir, tables_dir = resolve_output_dirs(result_path)
+
+    # Load the result file
+    with open(result_path, "r") as f:
         data = json.load(f)
 
     p = data["params"]
     params = Params(**p)
     
     # Create summary table
-    create_summary_table(data, args.out_prefix)
+    create_summary_table(data, tables_dir)
     
     if not args.no_plots:
         # Generate plots
-        plot_radius_and_slope(params, args.out_prefix)
-        plot_convergence(data["history"], data.get("meta", {}).get("vol_target", data["volume"]), args.out_prefix)
+        plot_radius_and_slope(params, figures_dir, args.out_prefix)
+        plot_convergence(
+            data["history"], 
+            data.get("meta", {}).get("vol_target", data["volume"]), 
+            figures_dir,
+            args.out_prefix
+        )
         
-        print(f"Generated plots:")
-        print(f"  {args.out_prefix}_radius.png")
-        print(f"  {args.out_prefix}_slope.png") 
-        print(f"  {args.out_prefix}_objective.png")
-        print(f"  {args.out_prefix}_volerr.png")
-        print(f"  {args.out_prefix}_summary.txt")
+        print(f"Generated outputs in:")
+        print(f"  Figures: {figures_dir}")
+        print(f"  Tables:  {tables_dir}")
+        print("\nFiles:")
+        print(f"  {figures_dir}/{args.out_prefix}_radius.png")
+        print(f"  {figures_dir}/{args.out_prefix}_slope.png") 
+        print(f"  {figures_dir}/{args.out_prefix}_objective.png")
+        print(f"  {figures_dir}/{args.out_prefix}_volerr.png")
+        print(f"  {tables_dir}/summary.txt")
 
 if __name__ == "__main__":
     main()

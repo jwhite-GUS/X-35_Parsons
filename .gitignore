@@ -98,3 +98,7 @@ artifacts/
 # *.pptx
 # *.docx
 # *.xlsx
+
+# ---- Generated outputs ----
+results/
+!results/README.md
