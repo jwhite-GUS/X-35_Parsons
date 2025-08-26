@@ -37,6 +37,18 @@ python bin/plot_results.py --result result.json --out-prefix figures/
 python bin/plot_results.py --result result.json --out-prefix summary --no-plots
 ```
 
+### Results Organization
+```bash
+# Run optimization (creates organized results structure)
+python bin/run_opt.py --vol-target 0.020257 --run-name x35
+
+# Get the latest run paths
+python bin/latest.py --run-name x35 --json
+
+# Plot latest results
+python bin/plot_results.py --result results/latest__x35.txt
+```
+
 ### Use as Library
 ```python
 from airship_opt import Params, Config, nelder_mead, sample_profile
