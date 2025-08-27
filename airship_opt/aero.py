@@ -10,6 +10,8 @@ import math
 from typing import Tuple
 from .types import Params, Coefs, Config
 from .geometry import build_coefs, evaluate_shape
+from .media.base import Medium
+from .objectives.utils import compute_ReV
 
 def volume(params: Params, cfg: Config) -> float:
     """
@@ -38,7 +40,7 @@ def volume(params: Params, cfg: Config) -> float:
     
     return vol
 
-def compute_drag(params: Params, cfg: Config) -> Tuple[float, float]:
+def compute_drag(params: Params, cfg: Config, medium: Medium) -> Tuple[float, float]:
     """
     Young-style axisymmetric skin-friction drag (nondimensional) and volume.
     
@@ -49,17 +51,19 @@ def compute_drag(params: Params, cfg: Config) -> Tuple[float, float]:
     Args:
         params: Hull parameters
         cfg: Configuration with integration and transition settings
+        medium: Working fluid properties
         
     Returns:
         Tuple of (CD, V) where CD is drag coefficient and V is volume
     """
-    # Volume for normalization and to determine fluid viscosity (for constant Re_vol)
+    # Volume for normalization 
     V = volume(params, cfg)
     
-    # Compute effective kinematic viscosity to achieve desired volume Reynolds number:
-    # Rv = (V)^(1/3) * U / nu, take U=1 for simplicity -> nu = (V)^(1/3) / Rv.
-    Re_vol = 1e7  # reference volume-based Reynolds number
-    nu = (V ** (1.0/3.0)) / Re_vol
+    # Use provided kinematic viscosity and compute Re_V
+    nu = medium.nu  # No longer derived from a hardcoded Re_V
+    
+    # Compute effective Re_V based on provided U or direct Re_V value
+    Re_V = compute_ReV(U=cfg.speed_U, V=V, nu=nu, ReV=cfg.Re_V)
     
     # Determine transition point (approximate) - halfway between X_m and X_i for demonstration:
     if cfg.transition_point is not None:

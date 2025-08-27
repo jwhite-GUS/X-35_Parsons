@@ -36,6 +36,7 @@ class Coefs:
 class Config:
     """Configuration for optimization and analysis."""
     vol_target: float        # target volume for constraint enforcement
+    medium: Any              # working fluid properties (e.g. air, water)
     w_volume: float = 1.0    # volume penalty weight
     w_shape: float = 1.0     # shape penalty weight
     w_bounds: float = 1e6    # constraint violation penalty weight
@@ -43,6 +44,8 @@ class Config:
     n_bl_steps: int = 10000  # integration steps for boundary layer
     epsilon_join: float = 1e-9  # epsilon for continuity checks
     transition_point: float = None  # laminar-turbulent transition point (None = auto)
+    speed_U: float = None    # free-stream speed [m/s], used to compute Re_V
+    Re_V: float = None       # volume-based Reynolds number (if provided directly)
 
 @dataclass
 class IterRecord:

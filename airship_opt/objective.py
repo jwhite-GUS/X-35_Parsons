@@ -94,8 +94,8 @@ def objective(params: Params, cfg: Config) -> Tuple[float, Dict]:
         Tuple of (objective_value, metadata_dict)
     """
     # Compute drag and volume
-    CD, V = compute_drag(params, cfg)
-    
+    CD, V = compute_drag(params, cfg, cfg.medium)
+
     # Volume error penalty
     vol_err = (V - cfg.vol_target) / max(cfg.vol_target, 1e-12)
     obj = CD + cfg.w_volume * (vol_err ** 2)

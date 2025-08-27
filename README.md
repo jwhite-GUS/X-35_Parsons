@@ -1,6 +1,24 @@
 # Airship Hull Shape Optimization - Parsons' Method
+### Results Organization
+```bash
+python bin/run_opt.py --vol-target 0.0195144 --U 2.0 --medium water --run-name x35_water
 
-A modular Python implementation of Parsons' eight-parameter airship hull shape optimization method using piecewise polynomial geometry and Young's drag formulation.
+# The meta/config.json will contain:
+{
+  "medium": {"name": "water_20C", "rho": 998.2, "nu": 1.004e-6},
+  "speed": {"U": 2.0},
+  "reynolds": {"ReV": 1.234e6}  # computed from U, V, and ν
+}
+
+# tables/summary.csv will include medium.name, medium.nu, ReV columns Python implementation of Parsons' eight-p├── io_viz.py           # Save/load results
+└── media/              # Fluid property models
+    ├── __init__.py
+    ├── base.py         # Medium interface  
+    ├── air.py          # ISA(ish) defaults
+    ├── water.py        # Common lab conditions
+    └── custom.py       # User-specified properties
+
+bin/meter airship hull shape optimization method using piecewise polynomial geometry and Young's drag formulation.
 
 ## Overview
 
@@ -10,6 +28,7 @@ This package implements Parsons' method for optimizing airship hull shapes using
 - **Young's drag formulation** with boundary layer momentum thickness integration
 - **Nelder-Mead optimization** with soft constraint penalties
 - **Modular architecture** for easy integration into larger systems
+- **Explicit fluid models** for traceable volume-based Reynolds number calculations
 
 ## Installation
 
@@ -21,11 +40,17 @@ pip install -r requirements.txt
 
 ### Run Optimization
 ```bash
-# Run optimization with target volume
-python bin/run_opt.py --vol-target 0.020257 --out result.json
+# Water at 20°C (default), compute Re_V from U and volume
+python bin/run_opt.py --vol-target 0.0195144 --U 2.0 --medium water --run-name x35_water
 
-# Run with custom parameters
-python bin/run_opt.py --vol-target 0.020257 --max-iter 500 --w-volume 1.0 --w-shape 1.0 --out result.json
+# Air at sea level with explicit Re_V
+python bin/run_opt.py --vol-target 0.0195144 --ReV 1e7 --medium air --run-name x35_air
+
+# Custom fluid (e.g., oil)
+python bin/run_opt.py --vol-target 0.0195144 --medium custom --rho 900 --nu 8e-7 --U 1.5 --run-name x35_oil
+
+# Customize fluid properties (e.g., air at different conditions)
+python bin/run_opt.py --vol-target 0.0195144 --medium air --rho 1.0 --nu 1.5e-5 --U 2.5 --run-name x35_custom
 ```
 
 ### Generate Visualizations
@@ -37,9 +62,37 @@ python bin/plot_results.py --result result.json --out-prefix figures/
 python bin/plot_results.py --result result.json --out-prefix summary --no-plots
 ```
 
+### Results Organization
+```bash
+# Run optimization (creates organized results structure)
+python bin/run_opt.py --vol-target 0.020257 --run-name x35
+
+# Get the latest run paths
+python bin/latest.py --run-name x35 --json
+
+# Plot latest results
+python bin/plot_results.py --result results/latest__x35.txt
+```
+
+### Medium & Reynolds Number
+
+The optimization uses volume-based Reynolds number (Re_V) following Parsons and Young:
+
+Re_V = U * V^(1/3) / ν
+
+This can be specified:
+1. Indirectly via U (free-stream speed) and fluid properties (preferred)
+2. Directly via --ReV flag (for comparison with historical results)
+
+Available media:
+- **Air**: Sea level default (ρ=1.225 kg/m³, ν=1.46e-5 m²/s)
+- **Water**: 20°C default (ρ=998.2 kg/m³, ν=1.004e-6 m²/s)
+- **Custom**: User-specified properties (--rho, --nu)
+
 ### Use as Library
 ```python
 from airship_opt import Params, Config, nelder_mead, sample_profile
+from airship_opt.media import make_water
 
 # Define parameters
 params = Params(rn=0.7573, fr=4.8488, xm=0.5888, k=0.1711,
@@ -48,12 +101,15 @@ params = Params(rn=0.7573, fr=4.8488, xm=0.5888, k=0.1711,
 # Sample hull profile
 X, Y, Yp = sample_profile(params, n=400)
 
+# Create medium and config
+medium = make_water()  # Use water at 20°C
+cfg = Config(vol_target=0.020257, speed_U=2.0)  # Compute Re_V from U
+
 # Run optimization
-cfg = Config(vol_target=0.020257)
 result = nelder_mead([0.7573, 4.8488, 0.5888, 0.1711, 0.7853, 0.6473, 2.2867, 0.1731],
                      bounds=[(0.2,1.5), (2.5,15.0), (0.05,0.95), (0.02,0.35), 
                             (0.10,0.995), (0.30,1.10), (0.50,3.50), (0.00,0.40)],
-                     cfg=cfg)
+                     cfg=cfg, medium=medium)
 ```
 
 ## Package Structure
@@ -96,7 +152,9 @@ tests/
 
 ### ✅ Implemented
 - **Faithful Parsons replication** with corrected parameter mappings
-- **Modular architecture** for easy integration and testing
+- **Modular architecture** for easy integration and testing 
+- **Explicit fluid models** with standardized interface
+- **Traceable volume-based Reynolds numbers**
 - **Headless optimization** with JSON result output
 - **Publication-quality visualization** (radius, slope, convergence plots)
 - **Comprehensive test suite** with continuity and parameter validation
@@ -104,6 +162,8 @@ tests/
 - **Analytic slope integration** for boundary layer calculations
 
 ### 🔄 Future Enhancements
+- **ISA atmosphere model** for altitude effects
+- **Temperature-dependent properties**
 - **Bézier curve geometry** (drop-in replacement for polynomials)
 - **Advanced optimization algorithms** (SLSQP, genetic algorithms)
 - **Multi-objective optimization** (drag vs. volume vs. manufacturability)
@@ -118,9 +178,10 @@ tests/
 - **Slope at inflection**: `S_actual = S/fr`
 - **Volume target**: Dynamic from original design validation
 
-### Boundary Layer Integration
-- **Analytic slopes**: `ds = √(1 + Y'²)dx` for accurate arc length
-- **Transition model**: Configurable laminar-turbulent transition point
+### Flow Physics
+- **Reynolds number**: Volume-based (Re_V = U * V^(1/3) / ν)
+- **Working fluid**: Explicit medium with ρ, ν properties
+- **Boundary layer**: Laminar-turbulent transition model
 - **Young's formula**: `CD = 4π × r_TE × θ_TE / V^(2/3) × (1 + H_TE)`
 
 ### Optimization Strategy
@@ -133,6 +194,13 @@ tests/
 ```
 Airship Hull Optimization Results
 ================================
+
+Flow Conditions:
+  Medium:              water_20C
+  Density:             998.20 kg/m³
+  Viscosity:           1.004e-6 m²/s
+  Speed:               2.00 m/s
+  Reynolds (Re_V):     1.234e6
 
 Parameters:
   rn (nose curvature): 0.7573
@@ -163,6 +231,7 @@ The implementation has been validated against Parsons' original work:
 - ✅ **Drag coefficient**: Realistic values (0.002-0.011 range)
 - ✅ **Continuity**: C¹ continuity verified at segment boundaries
 - ✅ **Parameter mappings**: Correct nondimensionalization
+- ✅ **Reynolds number**: Validated against Parsons/Young convention
 - ✅ **Optimization**: Converges to reasonable solutions
 
 ## Contributing
