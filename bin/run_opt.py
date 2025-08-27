@@ -139,6 +139,26 @@ def main():
     
     # Run optimization
     res = nelder_mead(list(p0.__dict__.values()), bounds, cfg, max_iter=args.max_iter)
+
+    # Compute ReV if needed
+    from airship_opt.objectives.utils import compute_ReV
+    ReV_value = compute_ReV(U=args.U, V=res.volume, nu=medium.nu, ReV=args.ReV)
+
+    # Update meta with computed ReV
+    meta = {
+        "medium": {
+            "name": medium.name,
+            "rho": medium.rho,
+            "nu": medium.nu
+        },
+        "speed": {
+            "U": args.U if getattr(args, "U", None) is not None else None
+        },
+        "reynolds": {
+            "ReV": float(ReV_value)
+        }
+    }
+    update_meta(run_dirs["base"], meta)
     
     # Save results and log completion
     result_path = save_result(res, run_dirs["artifacts"])
