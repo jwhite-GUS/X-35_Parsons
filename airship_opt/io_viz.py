@@ -172,6 +172,16 @@ def save_result(res: Result, path: Union[str, Path]) -> Path:
     path = Path(path)
     if path.is_dir():
         path = path / "result.json"
+
+    # Load metadata from meta/config.json if it exists
+    meta = {}
+    meta_path = path.parent.parent / "meta" / "config.json"
+    if meta_path.exists():
+        try:
+            with open(meta_path) as f:
+                meta = json.load(f)
+        except Exception:
+            pass
         
     data: Dict[str, Any] = {
         "params": asdict(res.params),
@@ -186,7 +196,7 @@ def save_result(res: Result, path: Union[str, Path]) -> Path:
         "volume": res.volume,
         "objective": res.objective,
         "history": [asdict(h) for h in res.history],
-        "meta": res.meta,
+        "meta": {**res.meta, **meta},  # Merge result meta with config meta
     }
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
