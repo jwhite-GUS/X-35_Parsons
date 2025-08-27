@@ -194,9 +194,21 @@ def create_summary_table(data: dict, tables_dir: Path):
         tables_dir: Directory to save the summary file
     """
     params = data["params"]
+    meta = data.get("meta", {})
+    medium = meta.get("medium", {"name": "unknown", "rho": None, "nu": None})
+    speed = meta.get("speed", {"U": None})
+    Re_V = meta.get("reynolds", {}).get("ReV")
+    
     summary = f"""
 Airship Hull Optimization Results
 ================================
+
+Flow Conditions:
+  Medium:              {medium['name']}
+  Density:             {f"{medium['rho']:.2f} kg/m³" if medium['rho'] else "N/A"}
+  Viscosity:           {f"{medium['nu']:.2e} m²/s" if medium['nu'] else "N/A"}
+  Speed:               {f"{speed['U']:.2f} m/s" if speed['U'] else "N/A"}
+  Reynolds (Re_V):     {f"{Re_V:.2e}" if Re_V else "N/A"}
 
 Parameters:
   rn (nose curvature): {params['rn']:.4f}
@@ -212,7 +224,7 @@ Results:
   Drag Coefficient:    {data['cd']:.6f}
   Volume:              {data['volume']:.6f}
   Objective:           {data['objective']:.6e}
-  Iterations:          {data['meta'].get('iterations', 'unknown')}
+  Iterations:          {meta.get('iterations', 'unknown')}
 
 Geometry:
   Max diameter at:     {params['xm']:.3f}L
@@ -224,12 +236,26 @@ Geometry:
         f.write(summary)
     
     # Create CSV summary for machine-readable format
+    # Get medium metadata
+    meta = data.get("meta", {})
+    medium = meta.get("medium", {"name": "unknown", "rho": None, "nu": None})
+    speed = meta.get("speed", {"U": None})
+    Re_V = meta.get("reynolds", {}).get("ReV")
+
     csv_data = [
         ["Parameter", "Value", "Units"],
+        # Medium info
+        ["medium.name", medium["name"], ""],
+        ["medium.rho", f"{medium['rho']:.3f}" if medium['rho'] else "N/A", "kg/m³"],
+        ["medium.nu", f"{medium['nu']:.3e}" if medium['nu'] else "N/A", "m²/s"],
+        ["U", f"{speed['U']:.2f}" if speed['U'] else "N/A", "m/s"],
+        ["ReV", f"{Re_V:.3e}" if Re_V else "N/A", "dimensionless"],
+        # Results
         ["cd_te", f"{data['cd']:.6f}", "dimensionless"],
         ["volume", f"{data['volume']:.6f}", "L³"],
         ["objective", f"{data['objective']:.6e}", "dimensionless"],
-        ["iterations", str(data['meta'].get('iterations', 'unknown')), "count"],
+        ["iterations", str(meta.get('iterations', 'unknown')), "count"],
+        # Parameters
         ["rn", f"{params['rn']:.4f}", "dimensionless"],
         ["fr", f"{params['fr']:.4f}", "L/D"],
         ["xm", f"{params['xm']:.4f}", "L"],

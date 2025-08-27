@@ -20,6 +20,21 @@ from airship_opt.types import Params, Config
 from airship_opt.optimize import nelder_mead
 from airship_opt.io_viz import save_result, prepare_run_dirs, update_meta, write_manifest
 
+def _get_medium(args):
+    """Create medium from command-line arguments."""
+    from airship_opt.media.air import make_air
+    from airship_opt.media.water import make_water
+    from airship_opt.media.custom import make_custom
+
+    if args.medium == "air":
+        return make_air(rho=args.rho, nu=args.nu) if args.rho or args.nu else make_air()
+    if args.medium == "water":
+        return make_water(rho=args.rho, nu=args.nu) if args.rho or args.nu else make_water()
+    # Custom medium path
+    rho = args.rho if args.rho is not None else 1.0
+    nu = args.nu if args.nu is not None else 1.0e-6
+    return make_custom(rho=rho, nu=nu)
+
 def main():
     ap = argparse.ArgumentParser(description="Run airship hull optimization")
     ap.add_argument("--results-root", default="results", help="Root directory for results")
@@ -30,6 +45,14 @@ def main():
     ap.add_argument("--w-volume", type=float, default=1.0, help="Volume penalty weight")
     ap.add_argument("--w-shape", type=float, default=1.0, help="Shape penalty weight")
     ap.add_argument("--seed", type=int, help="Random seed for reproducibility")
+    
+    # Medium selection arguments
+    ap.add_argument("--medium", choices=["air", "water", "custom"], default="water",
+                   help="Working fluid (default: water, matching Parsons' regime)")
+    ap.add_argument("--rho", type=float, help="Fluid density [kg/m^3] (overrides default)")
+    ap.add_argument("--nu", type=float, help="Kinematic viscosity [m^2/s] (overrides default)")
+    ap.add_argument("--U", type=float, help="Free-stream speed [m/s] (compute Re_V)")
+    ap.add_argument("--ReV", type=float, help="Volume-based Reynolds number Re_V as defined by Parsons/Young (override U)")
     args = ap.parse_args()
 
     # Set up results directory structure
@@ -63,10 +86,17 @@ def main():
     p0 = Params(rn=0.7573, fr=4.8488, xm=0.5888, k=0.1711,
                 Xi=0.7853, n=0.6473, S=2.2867, t=0.1731)
 
+    # Create medium from arguments
+    medium = _get_medium(args)
+
+    # Update config with medium-specific settings 
     cfg = Config(
-        vol_target=args.vol_target, 
-        w_volume=args.w_volume, 
-        w_shape=args.w_shape
+        vol_target=args.vol_target,
+        medium=medium,  # Pass the medium object
+        w_volume=args.w_volume,
+        w_shape=args.w_shape,
+        speed_U=args.U,
+        Re_V=args.ReV
     )
 
     bounds = [
@@ -92,6 +122,17 @@ def main():
             "bounds": bounds,
             "initial_params": p0.__dict__,
             "tag": args.tag
+        },
+        "medium": {
+            "name": medium.name,
+            "rho": medium.rho,
+            "nu": medium.nu
+        },
+        "speed": {
+            "U": args.U
+        },
+        "reynolds": {
+            "ReV": args.ReV
         }
     }
     update_meta(run_dirs["base"], config)
