@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>18.4 Modeling Complex Physical Processes</TITLE>
+<META NAME="description" CONTENT="18.4 Modeling Complex Physical Processes">
+<META NAME="keywords" CONTENT="notes">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="notes.css">
+
+<LINK REL="next" HREF="node131.html">
+<LINK REL="previous" HREF="node129.html">
+<LINK REL="up" HREF="node126.html">
+<LINK REL="next" HREF="node131.html">
+</HEAD>
+
+<BODY bgcolor="#ffffff" marginheight=0 marginwidth=0 topmargin=0 leftmargin=0>
+<table width=100% cellpadding=0 cellspacing=0 border=0 bgcolor="#000000">
+	<tr>
+		<td colspan=2 width=100% height=50 align=left bgcolor="#003366">
+		<img src="scaled_composites.jpg" alt="Burt Rutan's White Knight and SpaceShip One, Photo Courtesy of Scaled Composites" border=0>
+		</td>
+	</tr>
+
+	<tr>
+		<td colspan=2 width=100% height=5 align=right bgcolor="#000000">
+			<a href="notes.html"><font color=#ffffff face=Helvetica size=-1>
+                        Thermodynamics and Propulsion
+
+			</font></a>
+		</td>
+	</tr>
+
+	<tr>
+		<td width=100% colspan=2 height=20 align=left bgcolor=#cccccc valign=center>
+		
+		<!-- NAVIGATION ITEMS WOULD GO HERE -->
+		<!-- This title bar format was orginally produced by the National Radio Astronomy Observatory,
+                     http://www.cv.nrao.edu/-->
+
+		</td>
+	</tr>
+</table>	<table cellpadding=5 cellspacing=0 border=0>
+	<tr>
+		<td bgcolor="#ffffff" valign=top>	
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html2906"
+  HREF="node131.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2900"
+  HREF="node126.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2894"
+  HREF="node129.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2902"
+  HREF="node5.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A> 
+<A NAME="tex2html2904"
+  HREF="node139.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index" SRC="index.png"></A> 
+<BR>
+<B> Next:</B> <A NAME="tex2html2907"
+  HREF="node131.html">18.5 Heat Exchangers</A>
+<B> Up:</B> <A NAME="tex2html2901"
+  HREF="node126.html">18. Generalized Conduction and</A>
+<B> Previous:</B> <A NAME="tex2html2895"
+  HREF="node129.html">18.3 Transient Heat Transfer</A>
+ &nbsp; <B>  <A NAME="tex2html2903"
+  HREF="node5.html">Contents</A></B> 
+ &nbsp; <B>  <A NAME="tex2html2905"
+  HREF="node139.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION07440000000000000000">
+<SPAN CLASS="arabic">18</SPAN>.<SPAN CLASS="arabic">4</SPAN> Some Considerations in Modeling Complex Physical Processes</A>
+</H1>
+
+<P>
+In Sections <A HREF="node128.html#p3:GeneralizedCondConvFin">18.2</A> and
+<A HREF="node129.html#p3:GeneralizedCondConvTransient">18.3</A>, a number of assumptions were
+made about the processes that we were attempting to describe. These
+are all part of the general approach to modeling of physical
+systems. The main idea is that for engineering systems, one almost
+always cannot compute the process exactly, especially for fluid flow
+problems. At some level of detail, one generally needs to
+<SPAN  CLASS="textbf">model</SPAN>, i.e. to define some plausible behavior for attributes
+of the system that will not be computed.
+
+<P>
+Modeling can span an enormous range from the level of our assumption
+of uniform temperature within the solid object to a complex model
+for the small scale turbulent eddies in the flow past a compressor
+blade. In carrying out such modeling, it is critical to have a clear
+idea of just what the assumptions really mean, as well as the
+fidelity that we ascribe to the descriptions of actual physical
+phenomena, and we thus look at the statements we have made in this
+context.
+
+<P>
+One assertion made was that because <!-- MATH
+ $hL/k \ll 1$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="80" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2151.png"
+ ALT="$ hL/k \ll 1$"></SPAN>
+ and on the basis of
+a heat balance,
+<P><!-- MATH
+ \begin{displaymath}
+\frac{k}{L}(T_c -T_w) \approx h(T_w-T_\infty),
+\end{displaymath}
+ -->
+</P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="211" HEIGHT="56" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2152.png"
+ ALT="$\displaystyle \frac{k}{L}(T_c -T_w) \approx h(T_w-T_\infty),$">
+</DIV><P>
+</P>
+we could assume
+<P><!-- MATH
+ \begin{displaymath}
+\frac{(T_\textrm{body interior} - T_w)}{(T_w-T_\infty)} \ll 1.
+\end{displaymath}
+ -->
+</P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="193" HEIGHT="59" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2153.png"
+ ALT="$\displaystyle \frac{(T_\textrm{body interior} - T_w)}{(T_w-T_\infty)} \ll 1.$">
+</DIV><P>
+</P>
+
+<P>
+Based on this, we said that <!-- MATH
+ $T_\textrm{body}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="45" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2154.png"
+ ALT="$ T_\textrm{body}$"></SPAN>
+ is approximately
+uniform and <!-- MATH
+ $T_w \approx T_\textrm{body interior}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="137" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2155.png"
+ ALT="$ T_w \approx T_\textrm{body interior}$"></SPAN>
+. Another aspect
+is that setting <!-- MATH
+ $hA/Pk \ll 1$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="95" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2156.png"
+ ALT="$ hA/Pk \ll 1$"></SPAN>
+ erases any geometrical detail of the
+fin cross section. The only place where <SPAN CLASS="MATH"><IMG
+ WIDTH="18" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img4.png"
+ ALT="$ P$"></SPAN>
+ and <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img480.png"
+ ALT="$ A$"></SPAN>
+ enter the
+problem is in a non-dimensional combination. A third assumption,
+made in the fin problem, was that the heat transfer at the far end
+can be neglected. The solution including this effect, where <SPAN CLASS="MATH"><IMG
+ WIDTH="54" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2157.png"
+ ALT="$ h_L
+L/k$"></SPAN>
+ is an axial Biot number is given as
+Equation&nbsp;(<A HREF="#eq10:AxialBiotNumberT">18.19</A>). If the quantity <SPAN CLASS="MATH"><IMG
+ WIDTH="54" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2157.png"
+ ALT="$ h_L
+L/k$"></SPAN>
+ is
+small, you can see that Equation&nbsp;(<A HREF="#eq10:AxialBiotNumberT">18.19</A>)
+reduces to the previous result&nbsp;(<A HREF="node128.html#eq10:FinQ">18.13</A>).
+<P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay"><A NAME="eq10:AxialBiotNumberT"></A><!-- MATH
+ \begin{equation}
+\frac{T-T_\infty}{T_0-T_\infty}
+= \frac{\cosh(mL(1-\xi)) +
+(\textrm{Bi}_\textrm{axial}/m)\sinh(mL(1-\xi))}
+{\cosh(mL)+(\textrm{Bi}_\textrm{axial}/mL)\sinh(mL)}
+\end{equation}
+ -->
+<TABLE CLASS="equation" CELLPADDING="0" WIDTH="100%" ALIGN="CENTER">
+<TR VALIGN="MIDDLE">
+<TD NOWRAP ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
+ WIDTH="456" HEIGHT="58" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2158.png"
+ ALT="$\displaystyle \frac{T-T_\infty}{T_0-T_\infty} = \frac{\cosh(mL(1-\xi)) + (\text...
+...axial}/m)\sinh(mL(1-\xi))} {\cosh(mL)+(\textrm{Bi}_\textrm{axial}/mL)\sinh(mL)}$"></SPAN></TD>
+<TD NOWRAP CLASS="eqno" WIDTH="10" ALIGN="RIGHT">
+(<SPAN CLASS="arabic">18</SPAN>..<SPAN CLASS="arabic">19</SPAN>)</TD></TR>
+</TABLE></DIV>
+<BR CLEAR="ALL"><P></P>
+and
+<P></P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay"><A NAME="eq10:AxialBiotNumberQ"></A><!-- MATH
+ \begin{equation}
+\frac{\dot{Q}}{\sqrt{kAhP}(T_0-T_\infty)} = \cfrac{\textrm{Bi}_\textrm{axial}/mL+ \tanh(mL)}
+{1+\cfrac{\textrm{Bi}_\textrm{axial}}{mL}\tanh(mL)}.
+\end{equation}
+ -->
+<TABLE CLASS="equation" CELLPADDING="0" WIDTH="100%" ALIGN="CENTER">
+<TR VALIGN="MIDDLE">
+<TD NOWRAP ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
+ WIDTH="355" HEIGHT="88" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2159.png"
+ ALT="$\displaystyle \frac{\dot{Q}}{\sqrt{kAhP}(T_0-T_\infty)} = \cfrac{\textrm{Bi}_\textrm{axial}/mL+ \tanh(mL)} {1+\cfrac{\textrm{Bi}_\textrm{axial}}{mL}\tanh(mL)}.$"></SPAN></TD>
+<TD NOWRAP CLASS="eqno" WIDTH="10" ALIGN="RIGHT">
+(<SPAN CLASS="arabic">18</SPAN>..<SPAN CLASS="arabic">20</SPAN>)</TD></TR>
+</TABLE></DIV>
+<BR CLEAR="ALL"><P></P>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html2906"
+  HREF="node131.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2900"
+  HREF="node126.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2894"
+  HREF="node129.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2902"
+  HREF="node5.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents" SRC="contents.png"></A> 
+<A NAME="tex2html2904"
+  HREF="node139.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index" SRC="index.png"></A> 
+<BR>
+<B> Next:</B> <A NAME="tex2html2907"
+  HREF="node131.html">18.5 Heat Exchangers</A>
+<B> Up:</B> <A NAME="tex2html2901"
+  HREF="node126.html">18. Generalized Conduction and</A>
+<B> Previous:</B> <A NAME="tex2html2895"
+  HREF="node129.html">18.3 Transient Heat Transfer</A>
+ &nbsp; <B>  <A NAME="tex2html2903"
+  HREF="node5.html">Contents</A></B> 
+ &nbsp; <B>  <A NAME="tex2html2905"
+  HREF="node139.html">Index</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+UnifiedTP
+</ADDRESS>
+</BODY>
+</HTML>

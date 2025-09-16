@@ -1,0 +1,1017 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>pymoo - Algorithms</title>
+
+
+    
+  <link rel="stylesheet" href="../_static/css/index.d431a4ee1c1efae0e38bdfebc22debff.css">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="../_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="../_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.da26317cf37e5c4af2fa3e6253912353.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.30270b6e4c972e43c488.js">
+
+<link rel="stylesheet" href="../_static/css/custom.css">
+<link rel="stylesheet" href="../_static/css/pure.css">
+<link rel="icon" type="image/png" href="../_static/favicon.ico"/>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Initialization" href="initialization.html" />
+    <link rel="prev" title="Parallelization" href="../problems/parallelization.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E228X7JZK9"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-E228X7JZK9');
+    </script>
+
+    
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+
+
+          
+
+
+          <style>
+    .modal-backdrop {
+        position: unset !important;
+        z-index: 100000 !important;
+    }
+
+
+    .modal {
+        z-index: 100001 !important;
+    }
+
+</style>
+
+
+<div class="modal fade" id="newsletter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><b>Newsletter</b></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+                <!-- Begin Mailchimp Signup Form -->
+                <link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+                <style type="text/css">
+                    #mc_embed_signup {
+                        background: #fff;
+                        clear: left;
+                        font: 14px Helvetica, Arial, sans-serif;
+                    }
+
+                    /* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
+                       We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+                </style>
+                <div id="mc_embed_signup">
+                    <form action="https://pymoo.us1.list-manage.com/subscribe/post?u=4454ea68ad3065ee471d6f9aa&amp;id=6f71107645"
+                          method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form"
+                          class="validate" target="_blank" novalidate>
+                        <div id="mc_embed_signup_scroll">
+<!--                            <h2>Subscribe</h2>-->
+                            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                            <div class="mc-field-group">
+                                <label for="mce-EMAIL">Email Address <span class="asterisk">*</span>
+                                </label>
+                                <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+                            </div>
+                            <div class="mc-field-group">
+                                <label for="mce-FNAME">First Name </label>
+                                <input type="text" value="" name="FNAME" class="" id="mce-FNAME">
+                            </div>
+                            <div class="mc-field-group">
+                                <label for="mce-LNAME">Last Name </label>
+                                <input type="text" value="" name="LNAME" class="" id="mce-LNAME">
+                            </div>
+                            <div class="mc-field-group">
+                                <label for="mce-INSTITUTIO">Institution </label>
+                                <input type="text" value="" name="INSTITUTIO" class="" id="mce-INSTITUTIO">
+                            </div>
+                            <p>Powered by <a href="http://eepurl.com/hsCRrP"
+                                             title="MailChimp - email marketing made easy and fun">MailChimp</a></p>
+                            <div id="mce-responses" class="clear">
+                                <div class="response" id="mce-error-response" style="display:none"></div>
+                                <div class="response" id="mce-success-response" style="display:none"></div>
+                            </div>
+                            <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                            <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text"
+                                                                                                      name="b_4454ea68ad3065ee471d6f9aa_6f71107645"
+                                                                                                      tabindex="-1"
+                                                                                                      value=""></div>
+                            <div class="clear"><input type="submit" value="Subscribe" name="subscribe"
+                                                      id="mc-embedded-subscribe" class="button"></div>
+                        </div>
+                    </form>
+                </div>
+                <script type='text/javascript'
+                        src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script>
+                <script type='text/javascript'>(function ($) {
+                    window.fnames = new Array();
+                    window.ftypes = new Array();
+                    fnames[0] = 'EMAIL';
+                    ftypes[0] = 'email';
+                    fnames[1] = 'FNAME';
+                    ftypes[1] = 'text';
+                    fnames[2] = 'LNAME';
+                    ftypes[2] = 'text';
+                    fnames[6] = 'INSTITUTIO';
+                    ftypes[6] = 'text';
+                }(jQuery));
+                var $mcj = jQuery.noConflict(true);</script>
+                <!--End mc_embed_signup-->
+
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<main id="my-wrapper" class="container-xl mx-auto p-0 m-0 mt-3 mb-1 bd-content" role="main">
+
+
+    
+
+    <!--    <div class="w-25 p-3" style="background-color: #eee;">Width 25%</div>-->
+
+
+    <div id="main-header" class="row no-gutters">
+        <div class="col-12">
+            <a href="../index.html">
+                <img class="img-header d-none d-md-block" alt="header" src="../_static/header.jpg">
+                <img class="img-header d-block d-md-none" alt="header" src="../_static/logo.svg">
+            </a>
+        </div>
+    </div>
+
+    <div id="main-topbar" class="row m-0 px-3 py-3 border-bottom sticky">
+        <div class="col text-left my-auto">
+
+    <button
+            id="nb-toogle"
+            type="button"
+            class="navbar-toggler"
+            data-toggle="collapse"
+            data-target="#main-navbar"
+            data-label-expanded="Close"
+            aria-expanded="false">
+        <i class="fas fa-bars fa-lg" style="background-color: white"></i>
+
+    </button>
+
+</div>
+
+
+<!-- SMALL DEVICE -->
+<div class="col text-center my-auto d-block d-md-none">
+    <div class="float-left px-2">
+        <a href="https://github.com/anyoptimization/pymoo">
+            <i class="fab fa-github fa-2x" style="color:#000000;"></i>
+        </a>
+    </div>
+    <div class="float-left px-2">
+        <a href="" data-toggle="modal" data-target="#newsletter">
+            <i class="fas fa-newspaper fa-2x" style="color:#000000;"></i>
+        </a>
+    </div>
+    <div class="float-left px-2">
+        <a href="https://discord.gg/DUCGrvqWEM">
+            <i class="fas fa-comment fa-2x" style="color:#000000;"></i>
+        </a>
+    </div>
+</div>
+
+
+<!-- REGULAR -->
+<div class="col text-center my-auto d-none d-md-block">
+    <a href="https://github.com/anyoptimization/pymoo">
+        <button type="button" class="btn btn-secondary">GitHub</button>
+    </a>
+    <a data-toggle="modal" data-target="#newsletter">
+        <button type="button" class="btn btn-secondary">Newsletter</button>
+    </a>
+    <a href="https://discord.gg/DUCGrvqWEM">
+        <button type="button" class="btn btn-secondary">Discord</button>
+    </a>
+</div>
+
+<div class="col text-right my-auto">
+    <b>Version: </b>0.6.1.5
+</div>
+
+    </div>
+
+    <div class="row m-0 pt-1 px-3">
+
+        <div id="main-navbar" class="col-12 col-md-3 bd-sidebar sticky show" role="menu">
+            <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+            <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../index.html">
+   pymoo: Multi-objective Optimization in Python
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../news.html">
+   News
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../getting_started/index.html">
+   Getting Started
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../getting_started/preface.html">
+     Preface: Basics and Challenges
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../getting_started/part_1.html">
+     Part I: A Constrained Bi-objective Optimization Problem
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../getting_started/part_2.html">
+     Part II: Find a Solution Set using Multi-objective Optimization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../getting_started/part_3.html">
+     Part III: Multi-Criteria Decision Making
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../getting_started/part_4.html">
+     Part IV: Analysis of Convergence
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../getting_started/part_5.html">
+     Part V: Some more useful Information
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../getting_started/source_code.html">
+     Source Code
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../interface/index.html">
+   Interface
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../interface/minimize.html">
+     Minimize
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../interface/problem.html">
+     Problem
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../interface/algorithm.html">
+     Algorithm
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../interface/termination.html">
+     Termination Criterion
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../interface/callback.html">
+     Callback
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../interface/display.html">
+     Display
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../interface/result.html">
+     Result
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../problems/index.html">
+   Problems
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../problems/definition.html">
+     Definition
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../problems/test_problems.html">
+     Test Problems
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/single/ackley.html">
+       Ackley
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/single/griewank.html">
+       Griewank
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/single/zakharov.html">
+       Zakharov
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/single/rastrigin.html">
+       Rastrigin
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/single/rosenbrock.html">
+       Rosenbrock
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/multi/bnh.html">
+       BNH
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/multi/zdt.html">
+       ZDT
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/multi/osy.html">
+       OSY
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/multi/tnk.html">
+       TNK
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/multi/truss2d.html">
+       Truss2D
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/multi/welded_beam.html">
+       Welded Beam
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/multi/omni_test.html">
+       Omni-test
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/multi/sym_part.html">
+       SYM-PART
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/many/dtlz.html">
+       DTLZ
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/many/wfg.html">
+       WFG
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/constrained/mw.html">
+       MW
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/constrained/dascmop.html">
+       DAS-CMOP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/constrained/modact.html">
+       MODAct
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../problems/dynamic/df.html">
+       DF: Benchmark Problems for CEC2018 Competition on Dynamic Multiobjective Optimisation
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../problems/parallelization.html">
+     Parallelization
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 current active collapsible-parent">
+  <a class="current reference internal" href="#">
+   Algorithms
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="initialization.html">
+     Initialization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="usage.html">
+     Usage
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="list.html">
+     List Of Algorithms
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="hyperparameters.html">
+     Hyperparameters
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/ga.html">
+     GA: Genetic Algorithm
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/brkga.html">
+     BRKGA: Biased Random Key Genetic Algorithm
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/de.html">
+     DE: Differential Evolution
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/nelder.html">
+     Nelder Mead
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/pso.html">
+     PSO: Particle Swarm Optimization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/pattern.html">
+     Pattern Search
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/es.html">
+     ES: Evolutionary Strategy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/sres.html">
+     SRES: Stochastic Ranking Evolutionary Strategy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/isres.html">
+     ISRES: Improved Stochastic Ranking Evolutionary Strategy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/cmaes.html">
+     CMA-ES
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="soo/g3pcx.html">
+     G3PCX: A Computationally Efficient Evolutionary Algorithm for Real-Parameter Optimization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/nsga2.html">
+     NSGA-II: Non-dominated Sorting Genetic Algorithm
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/rnsga2.html">
+     R-NSGA-II
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/nsga3.html">
+     NSGA-III
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/unsga3.html">
+     U-NSGA-III
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/rnsga3.html">
+     R-NSGA-III
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/moead.html">
+     MOEA/D
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/ctaea.html">
+     C-TAEA
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/age.html">
+     AGE-MOEA: Adaptive Geometry Estimation based MOEA
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/age2.html">
+     AGE-MOEA2: Adaptive Geometry Estimation based MOEA
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/rvea.html">
+     RVEA: Reference Vector Guided Evolutionary Algorithm
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/sms.html">
+     SMS-EMOA: Multiobjective selection based on dominated hypervolume
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/dnsga2.html">
+     D-NSGA-II: Dynamic Multi-Objective Optimization Using Modified NSGA-II
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="moo/kgb.html">
+     KGB-DMOEA: Knowledge-Guided Bayesian Dynamic Multi-Objective Evolutionary Algorithm
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../constraints/index.html">
+   Constraint Handling
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../constraints/problem.html">
+     Constrained Problem
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../constraints/feas_first.html">
+     Feasibility First (Parameter-less Approach)
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../constraints/as_penalty.html">
+     Constraint Violation (CV) as Penalty
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../constraints/as_obj.html">
+     Constraint Violation (CV) As Objective
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../constraints/eps.html">
+     <span class="math notranslate nohighlight">
+      \(\epsilon\)
+     </span>
+     -Constraint Handling
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../constraints/repair.html">
+     Repair Operator
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../gradients/index.html">
+   Gradients
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../customization/index.html">
+   Customization
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../customization/binary.html">
+     Binary Variable Problem
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../customization/discrete.html">
+     Discrete Variable Problem
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../customization/permutation.html">
+     Permutations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../customization/mixed.html">
+     Mixed Variable Problem
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../customization/custom.html">
+     Custom Variable Type
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../customization/initialization.html">
+     Biased Initialization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../customization/subset.html">
+     Subset Selection Problem
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../operators/index.html">
+   Operators
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../operators/sampling.html">
+     Sampling
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../operators/selection.html">
+     Selection
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../operators/crossover.html">
+     Crossover
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../operators/mutation.html">
+     Mutation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../operators/repair.html">
+     Repair
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../visualization/index.html">
+   Visualization
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualization/scatter.html">
+     Scatter Plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualization/pcp.html">
+     Parallel Coordinate Plots
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualization/heatmap.html">
+     Heatmap
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualization/petal.html">
+     Petal Diagram
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualization/radar.html">
+     Radar Plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualization/radviz.html">
+     Radviz
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualization/star.html">
+     Star Coordinate Plot
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualization/video.html">
+     Video
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../mcdm/index.html">
+   Multi-Criteria Decision Making (MCDM)
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../case_studies/index.html">
+   Case Studies
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../case_studies/subset_selection.html">
+     Subset Selection Problem
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../case_studies/portfolio_allocation.html">
+     Portfolio Allocation
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../misc/indicators.html">
+   Performance Indicator
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../misc/index.html">
+   Miscellaneous
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../misc/reference_directions.html">
+     Reference Directions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../misc/convergence.html">
+     Convergence
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../misc/decomposition.html">
+     Decomposition
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../misc/kktpm.html">
+     Karush Kuhn Tucker Proximity Measure (KKTPM)
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../misc/checkpoint.html">
+     Checkpoints
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../faq.html">
+   FAQ
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../api/index.html">
+   API Reference
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/model.html">
+     Model
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/algorithms.html">
+     Algorithms
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../versions.html">
+   Versions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contribute.html">
+   Contribute
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references.html">
+   Cite Us
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contact.html">
+   Contact
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../license.html">
+   License
+  </a>
+ </li>
+</ul>
+
+</nav>
+        </div>
+
+
+        <div id="main-content" class="col py-3 px-6 col-md-9 px-md-4">
+
+            <div>
+                
+              <div>
+                
+  <span class="target" id="nb-algorithms"></span><div class="section" id="Algorithms">
+<h1>Algorithms<a class="headerlink" href="#Algorithms" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>Algorithms are probably the reason why you got to know <em>pymoo</em>. You can find a variety of unconstrained and constrained single-, multi-, and many-objective optimization algorithms. Besides the availability of an algorithm, also its usage is of importance. The following tutorial pages show the different ways of initialization and running algorithms (functional, next, ask-and-tell) and all algorithms available in pymoo.</p>
+<div class="myownstyle admonition">
+<p class="admonition-title">Overview</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="initialization.html#nb-algorithms-init"><span class="std std-ref">Initialization</span></a>: How to initialize an algorithm to be run on a problem.</p></li>
+<li><p><a class="reference internal" href="usage.html#nb-algorithms-usage"><span class="std std-ref">Usage</span></a>: Different ways to run algorithms with different levels of control during optimization.</p></li>
+<li><p><a class="reference internal" href="list.html#nb-algorithms-list"><span class="std std-ref">List of Algorithms</span></a>: Unconstrained and constrained single-, multi-, and many-objective optimization algorithms</p></li>
+</ul>
+</div>
+</div>
+
+
+              </div>
+              
+            </div>
+
+            
+            <div class='row prev-next-bottom mt-5 mb-2 px-0 h-auto'>
+                
+<div class="col text-left my-auto">
+    <a href="../problems/parallelization.html">
+        <button type="button" href="../problems/parallelization.html"
+                class="text-left prev-next-link left-prev btn btn-outline-secondary"><< Parallelization
+        </button>
+    </a>
+</div>
+<div class="col text-right my-auto">
+    <a href="initialization.html">
+        <button type="button" class="text-right prev-next-link right-next btn btn-outline-secondary">Initialization >>
+        </button>
+    </a>
+</div>
+
+            </div>
+            
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+    <div id="main-footer" class="row"><footer class="footer">
+    <div class="container text-center">
+      <p>
+        <a href="http://www.julianblank.com">Julian Blank</a>
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+    </div>
+
+
+
+</main>
+
+
+</div>
+
+
+      </div>
+    </div>
+
+    
+  <script src="../_static/js/index.30270b6e4c972e43c488.js"></script>
+
+
+    
+  </body>
+</html>

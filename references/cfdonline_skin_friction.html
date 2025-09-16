@@ -1,0 +1,776 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" dir="ltr">
+<head>
+<title>Skin friction coefficient -- CFD-Wiki, the free CFD reference</title>
+<script language="JavaScript">
+   function body_onload_funcs() {
+		  P7_initPM(1,3,0,-5,0);
+		  <?php if(['body_onload']) { ('body_onload'); }?>
+		}
+</script>
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<script type="text/javascript" src="/p7pm/p7popmenu.js"></script>
+<style type="text/css" media="screen">
+<!--
+    @import url("/p7pm/cfd_online_mainmenu.css");
+		@import url("/CSS/cfdonline.css");
+-->
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="MediaWiki 1.16.5" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/W/opensearch_desc.php" title="CFD-Wiki (en)" />
+<link title="Creative Commons" type="application/rdf+xml" href="/W/index.php?title=Skin_friction_coefficient&amp;action=creativecommons" rel="meta" />
+<link rel="copyright" href="/Wiki/CFD-Wiki:Copyrights" />
+<link rel="alternate" type="application/atom+xml" title="CFD-Wiki Atom feed" href="/W/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/W/skins/common/shared.css?270" media="screen" />
+<link rel="stylesheet" href="/W/skins/common/commonPrint.css?270" media="print" />
+<link rel="stylesheet" href="/W/skins/cfdonline/main.css?270" media="screen" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="/W/skins/cfdonline/IE50Fixes.css?270" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="/W/skins/cfdonline/IE55Fixes.css?270" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="/W/skins/cfdonline/IE60Fixes.css?270" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="/W/skins/cfdonline/IE70Fixes.css?270" media="screen" /><![endif]-->
+<link rel="stylesheet" href="/W/index.php?title=MediaWiki:Common.css&amp;usemsgcache=yes&amp;ctype=text%2Fcss&amp;smaxage=18000&amp;action=raw&amp;maxage=18000" />
+<link rel="stylesheet" href="/W/index.php?title=MediaWiki:Print.css&amp;usemsgcache=yes&amp;ctype=text%2Fcss&amp;smaxage=18000&amp;action=raw&amp;maxage=18000" media="print" />
+<link rel="stylesheet" href="/W/index.php?title=MediaWiki:Cfdonline.css&amp;usemsgcache=yes&amp;ctype=text%2Fcss&amp;smaxage=18000&amp;action=raw&amp;maxage=18000" />
+<link rel="stylesheet" href="/W/index.php?title=-&amp;action=raw&amp;maxage=18000&amp;gen=css" />
+<script>
+var skin="cfdonline",
+stylepath="/W/skins",
+wgUrlProtocols="http\\:\\/\\/|https\\:\\/\\/|ftp\\:\\/\\/|irc\\:\\/\\/|gopher\\:\\/\\/|telnet\\:\\/\\/|nntp\\:\\/\\/|worldwind\\:\\/\\/|mailto\\:|news\\:|svn\\:\\/\\/",
+wgArticlePath="/Wiki/$1",
+wgScriptPath="/W",
+wgScriptExtension=".php",
+wgScript="/W/index.php",
+wgVariantArticlePath=false,
+wgActionPaths={},
+wgServer="https://www.cfd-online.com",
+wgCanonicalNamespace="",
+wgCanonicalSpecialPageName=false,
+wgNamespaceNumber=0,
+wgPageName="Skin_friction_coefficient",
+wgTitle="Skin friction coefficient",
+wgAction="view",
+wgArticleId=2175,
+wgIsArticle=true,
+wgUserName=null,
+wgUserGroups=null,
+wgUserLanguage="en",
+wgContentLanguage="en",
+wgBreakFrames=false,
+wgCurRevisionId=23458,
+wgVersion="1.16.5",
+wgEnableAPI=true,
+wgEnableWriteAPI=true,
+wgSeparatorTransformTable=["", ""],
+wgDigitTransformTable=["", ""],
+wgMainPageTitle="Main Page",
+wgFormattedNamespaces={"-2": "Media", "-1": "Special", "0": "", "1": "Talk", "2": "User", "3": "User talk", "4": "CFD-Wiki", "5": "CFD-Wiki talk", "6": "File", "7": "File talk", "8": "MediaWiki", "9": "MediaWiki talk", "10": "Template", "11": "Template talk", "12": "Help", "13": "Help talk", "14": "Category", "15": "Category talk"},
+wgNamespaceIds={"media": -2, "special": -1, "": 0, "talk": 1, "user": 2, "user_talk": 3, "cfd-wiki": 4, "cfd-wiki_talk": 5, "file": 6, "file_talk": 7, "mediawiki": 8, "mediawiki_talk": 9, "template": 10, "template_talk": 11, "help": 12, "help_talk": 13, "category": 14, "category_talk": 15, "image": 6, "image_talk": 7},
+wgSiteName="CFD-Wiki",
+wgCategories=["Stubs"],
+wgRestrictionEdit=[],
+wgRestrictionMove=[];
+</script><script src="/W/skins/common/wikibits.js?270"></script>
+<script src="/W/skins/common/ajax.js?270"></script>
+<script src="/W/index.php?title=-&amp;action=raw&amp;gen=js&amp;useskin=cfdonline&amp;270"></script>
+
+</head>
+<body onload="P7_initPM(1,3,0,-5,0)" class="mediawiki ltr ns-0 ns-subject page-Skin_friction_coefficient skin-cfdonline">
+<!-- CFD Online addition below -->
+   <!--
+Google Analytics disabled by Jonas 2021-07-03
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-22128555-1', 'cfd-online.com');
+  ga('send', 'pageview');
+
+</script>-->
+<table id="logo_and_banner" width="98%" border="0" cellpadding="2" cellspacing="0" summary="Logo and Banner Table Layout Table"> 
+  <tr> 
+    <td align="left" valign="top"> 
+      <table id="logo_and_banner" width="275" border="0" cellspacing="0" cellpadding="0"> 
+        <tr> 
+          <td rowspan="2"><img alt="CFD Online Logo" src="/Images/new_cfdonline_logo_main_star.gif" width="60" height="78" /></td> 
+          <td><img alt="CFD Online URL" src="/Images/new_cfdonline_logo_main_name.gif" width="215" height="49" /></td> 
+        </tr> 
+        <tr> 
+          <td colspan="2"><a href="/"><img src="/Images/new_cfdonline_logo_home.gif" alt="www.cfd-online.com" width="215" height="29" longdesc="https://www.cfd-online.com" style="border-style: none" border="0" /></a></td> 
+        </tr> 
+      </table> 
+    </td> 
+    <td align="center" valign="middle" nowrap="nowrap">
+      <script language="JavaScript" src="https://www.cfd-online.com/WebAdverts/ads.pl?jscript" type="text/javascript">
+</script> 
+      <noscript> 
+      <a href= "https://www.cfd-online.com/WebAdverts/ads.pl?banner=NonSSI;page=navigation" target="_top"> <img src="https://www.cfd-online.com/WebAdverts/ads.pl?page=navigation" 
+		alt="Click Here!" width="468" height="60" border="0" align="middle" /> </a> 
+      </noscript> 
+    </td> 
+<td align="right" valign="top">
+<font face="arial" size="2">[<a href="/About/sponsors.php">Sponsors</a>]</font>
+</td>
+  </tr> 
+</table>
+<table id="main_menu" width="98%" border="0" cellpadding="1" cellspacing="0" summary="Main Menu Table"> 
+<tr> 
+<td> 
+<ul id="p7PMnav"> 
+<li id="mm"><a href="/">Home</a></li> 
+<li id="mm"><a href="/Forum/news.cgi" class="p7PMtrg">News</a> 
+<ul>
+<li id="mm"><a href="/Forum/news.cgi">Index</a></li>
+<li id="mm"><a href="/Forum/news.cgi?form=0">Post News</a></li>
+<li id="mm"><a href="/Forum/news.cgi?subscribe">Subscribe/Unsubscribe</a></li>
+</ul>
+</li> 
+<li id="mm"><a href="/Forums/" class="p7PMtrg">Forums</a> 
+<ul> 
+<li id="mm"><a href="/Forums/main/">Main CFD Forum</a></li> 
+<li id="mm"><a href="/Forums/system-analysis">System Analysis</a></li>
+<li id="mm"><a href="/Forums/structural-mechanics">Structural Mechanics</a></li>
+<li id="mm"><a href="/Forums/electromagnetics">Electromagnetics</a></li>
+<li id="mm"><a href="/Forums/cfd-freelancers">CFD Freelancers</a></li>
+<li id="mm"><a href="/Forums/hardware/">Hardware Forum</a></li> 
+<li id="mm"><a href="/Forums/lounge/">Lounge</a></li> 
+<li id="mm"><a href="/Forums/software/" class="p7PMtrg">Software User Forums</a>
+<ul>
+<li id="mm"><a href="/Forums/ansys/" class="p7PMtrg">ANSYS</a>
+<ul>
+<li id="mm"><a href="/Forums/cfx/">CFX</a></li> 
+<li id="mm"><a href="/Forums/fluent/">FLUENT</a></li>
+<li id="mm"><a href="/Forums/ansys-meshing/">Meshing &amp; Geometry</a></li> 
+</ul>
+</li>
+<li id="mm"><a href="/Forums/autodesk-simulation-cfd/">Autodesk</a></li>
+<li id="mm"><a href="/Forums/avl-fire/">AVL FIRE</a></li>
+<li id="mm"><a href="/Forums/comsol/">COMSOL</a></li>
+<li id="mm"><a href="/Forums/converge/">CONVERGE</a></li>
+<!-- <li id="mm"><a href="/Forums/edge">Edge</a></li>-->
+<li id="mm"><a href="/Forums/fidelity-cfd/">Fidelity CFD</a></li> 
+<li id="mm"><a href="/Forums/floefd-floworks-flotherm">FloEFD &amp; FloTHERM</a></li> 
+<li id="mm"><a href="/Forums/flow-3d/">FLOW-3D</a></li> 
+<li id="mm"><a href="/Forums/openfoam/" class="p7PMtrg">OpenFOAM</a>
+<ul>
+<li id="mm"><a href="/Forums/openfoam-news-announcements/">News & Announcements</a></li> 
+<li id="mm"><a href="/Forums/openfoam-installation/">Installation</a></li>
+<li id="mm"><a href="/Forums/openfoam-meshing/">Meshing</a></li>
+<li id="mm"><a href="/Forums/openfoam-pre-processing/">Pre-Processing</a></li>
+<li id="mm"><a href="/Forums/openfoam-solving/">Solving</a></li>
+<li id="mm"><a href="/Forums/openfoam-post-processing/">Post-Processing</a></li>
+<li id="mm"><a href="/Forums/openfoam-programming-development/">Programming</a></li>
+<li id="mm"><a href="/Forums/openfoam-verification-validation/">Verification & Validation</a></li>
+<li id="mm"><a href="/Forums/openfoam-community-contributions/">Community Contributions</a></li>
+<li id="mm"><a href="/Forums/openfoam-journal/">Journal</a></li>
+<li id="mm"><a href="/Forums/openfoam-bugs/">Bugs</a></li>
+</ul>
+</li>
+<li id="mm"><a href="/Forums/phoenics/">Phoenics</a></li> 
+<li id="mm"><a href="/Forums/reef3d/">REEF3D</a>
+<ul>
+<li id="mm"><a href="/Forums/reef3d-news-announcements/">News & Announcements</a></li>
+</ul>
+</li> 
+<li id="mm"><a href="/Forums/siemens/" class="p7PMtrg">Siemens</a>
+<ul>
+<li id="mm"><a href="/Forums/star-ccm/">STAR-CCM+</a></li> 
+<li id="mm"><a href="/Forums/star-cd/">STAR-CD</a></li> 
+</ul>
+</li>
+<li id="mm"><a href="/Forums/su2/" class="p7PMtrg">SU2</a>
+<ul>
+<li id="mm"><a href="/Forums/su2-news-announcements/">News & Announcements</a></li>
+<li id="mm"><a href="/Forums/su2-installation/">Installation</a></li>
+<li id="mm"><a href="/Forums/su2-shape-design/">Shape Design</a></li> 
+</ul>
+</li>
+</ul>
+</li>
+<li id="mm"><a href="/Forums/pre-processors/" class="p7PMtrg">Pre-processors</a>
+<ul>
+<li id="mm"><a href="/Forums/ansa/">ANSA</a></li> 
+<li id="mm"><a href="/Forums/engrid/">enGrid</a></li> 
+<li id="mm"><a href="/Forums/gridpro/">GridPro</a></li> 
+<li id="mm"><a href="/Forums/pointwise/">Pointwise</a></li> 
+</ul>
+</li> 
+<li id="mm"><a href="/Forums/post-processors/" class="p7PMtrg">Post-Processors</a>
+<ul>
+<li id="mm"><a href="/Forums/ensight/">EnSight</a></li> 
+<li id="mm"><a href="/Forums/fieldview/">FieldView</a></li> 
+<li id="mm"><a href="/Forums/paraview/">ParaView</a></li> 
+<li id="mm"><a href="/Forums/tecplot/">Tecplot</a></li> 
+</ul>
+</li>
+<li id="mm"><a href="/Forums/special-topics/" class="p7PMtrg">Special Topics</a>
+<ul>
+<li id="mm"><a href="/Forums/mesh-generation/">Mesh Generation</a></li> 
+<li id="mm"><a href="/Forums/visualization/">Visualization</a></li>  
+</ul>
+</li>
+<li id="mm"><a href="/Forums/community/" class="p7PMtrg">CFD Online Community</a>
+<ul>
+<li id="mm"><a href="/Forums/site-news-announcements/">Site News</a></li> 
+<li id="mm"><a href="/Forums/site-help-feedback-discussions/">Site Help &amp; Discussions</a></li> 
+<li id="mm"><a href="/Forums/cfd-wiki/">CFD-Wiki</a></li> 
+</ul>
+</li> 
+</ul>
+</li> 
+<li id="mm"><a href="/Wiki/Main_Page" class="p7PMtrg">Wiki</a> 
+<ul> 
+<li id="mm"><a href="/Wiki/CFD-Wiki:Introduction">Introduction</a></li>
+<li id="mm"><a href="/Wiki/Special:Recentchanges">Recent Changes</a></li>
+<li id="mm"><a href="/Wiki/Reference_section" class="p7PMtrg">Reference Section</a>
+<ul>
+<li id="mm"><a href="/Wiki/Fluid_dynamics">Fluid Dynamics</a></li> 
+<li id="mm"><a href="/Wiki/Turbulence_modeling">Turbulence Modeling</a></li> 
+<li id="mm"><a href="/Wiki/Numerical_methods">Numerical Methods</a></li> 
+<li id="mm"><a href="/Wiki/Meshing">Meshing</a></li> 
+</ul>
+</li>
+<li id="mm"><a href="/Wiki/Special_topics" class="p7PMtrg">Special Topics</a>
+<ul>
+<li id="mm"><a href="/Wiki/Aero-acoustics_and_noise">Aero-Acoustics</a></li>
+<li id="mm"><a href="/Wiki/Combustion">Combustion</a></li> 
+<li id="mm"><a href="/Wiki/Parallel_computing">Parallel Computing</a></li> 
+<li id="mm"><a href="/Wiki/Turbulence">Turbulence</a></li> 
+</ul>
+</li> 
+<li id="mm"><a href="/Wiki/Application_areas" class="p7PMtrg">Application Areas</a>
+<ul>
+<li id="mm"><a href="/Wiki/Aerospace">Aerospace</a></li> 
+<li id="mm"><a href="/Wiki/Automotive">Automotive</a></li> 
+<li id="mm"><a href="/Wiki/Turbomachinery">Turbomachinery</a></li> 
+</ul>
+</li>
+<li id="mm"><a href="/Wiki/Best_practice_guidelines" class="p7PMtrg">Best Practice Guides</a>
+<ul>
+<li id="mm"><a href="/Wiki/Best_practice_guidelines_for_automotive_CFD">Automotive CFD</a></li> 
+<li id="mm"><a href="/Wiki/Best_practice_guidelines_for_turbomachinery_CFD">Turbomachiney CFD</a></li> 
+<li id="mm"><a href="/Wiki/Best_practice_guidelines_for_heat_transfer_simulations">Heat Transfer CFD</a></li> 
+</ul>
+</li>
+<li id="mm"><a href="/Wiki/Validation_and_test_cases">Validation Cases</a></li>
+<li id="mm"><a href="/Wiki/Codes">Codes</a></li>
+<li id="mm"><a href="/Wiki/Source_code_archive">Source Code Archive</a></li>
+<li id="mm"><a href="/Wiki/FAQ%27s" class="p7PMtrg">FAQ's</a>
+<ul>
+<li id="mm"><a href="/Wiki/Ansys_FAQ">Ansys</a></li>
+<li id="mm"><a href="/Wiki/CHAM_FAQ">CHAM</a></li>
+<li id="mm"><a href="/Wiki/CONVERGE_FAQ">CONVERGE</a></li>
+<li id="mm"><a href="/Wiki/Fluent_FAQ">Fluent</a></li>
+<li id="mm"><a href="/Wiki/Metacomp_FAQ">Metaconp</a></li>
+<li id="mm"><a href="/Wiki/MeteoDyn_FAQ">MeteoDyn</a></li>
+<li id="mm"><a href="/Wiki/Siemens_FAQ">Siemens</a></li>
+</ul>
+</li>
+<li id="mm"><a href="/Wiki/History_of_CFD">History of CFD</a></li>
+<li id="mm"><a href="/Wiki/CFD-Wiki:About" class="p7PMtrg">About CFD-Wiki</a>
+<ul>
+<li id="mm"><a href="/Wiki/Help:Contents">Help</a></li>
+<li id="mm"><a href="/Wiki/CFD-Wiki:FAQ">FAQ</a></li>
+<li id="mm"><a href="/Wiki/CFD-Wiki:Contribute_something_today">Getting Started</a></li>
+<li id="mm"><a href="/Wiki/CFD-Wiki:Community_Portal">Community Portal</a></li>
+<li id="mm"><a href="/Wiki/CFD-Wiki:Donate_texts">Donate Texts</a></li>
+<li id="mm"><a href="/Wiki/CFD-Wiki:Donated_texts">Donated Texts</a></li>
+</ul>
+</li>
+</ul>
+</li> 
+<li id="mm"><a href="/Links/" class="p7PMtrg">Links</a> 
+<ul> 
+<li id="mm"><a href="/Links/whatsnew.html">What's New</a></li> 
+<li id="mm"><a href="/Links/intro.html">Introduction</a></li> 
+<li id="mm"><a href="/Links/modeling_and_numerics.html" class="p7PMtrg">Modeling &amp; Numerics</a> 
+<ul> 
+<li id="mm"><a href="/Links/modeling_and_numerics.html#turbulence">Turbulence</a></li>
+<li id="mm"><a href="/Links/modeling_and_numerics.html#combustion">Combustion</a></li> 
+<li id="mm"><a href="/Links/modeling_and_numerics.html#discr">Discretization Schemes</a></li> 
+<li id="mm"><a href="/Links/modeling_and_numerics.html#solvers">Solvers</a></li> 
+<li id="mm"><a href="/Links/modeling_and_numerics.html#multigrid">Multigrid Methods</a></li> 
+<li id="mm"><a href="/Links/modeling_and_numerics.html#fem">Finite Element Methods</a></li> 
+<li id="mm"><a href="/Links/modeling_and_numerics.html#cartesian">Cartesian Methods / AMR</a></li> 
+<li id="mm"><a href="/Links/modeling_and_numerics.html#numana">Numerial Analysis</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/meshing.html" class="p7PMtrg">Mesh Generation</a> 
+<ul> 
+<li id="mm"><a href="/Links/meshing.html#general">General Resources</a></li> 
+<li id="mm"><a href="/Links/meshing.html#projects">Selected Projects</a></li> 
+<li id="mm"><a href="/Links/meshing.html#companies">Companies</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/programming.html" class="p7PMtrg">Programming &amp; Dev.</a> 
+<ul> 
+<li id="mm"><a href="/Links/programming.html#dataformats">Data Formats</a></li> 
+<li id="mm"><a href="/Links/programming.html#libraries">Software Libraries</a></li> 
+<li id="mm"><a href="/Links/soft.html#num">Numerical Software</a></li> 
+<li id="mm"><a href="/Links/programming.html#parallel">Parallel Computing</a></li> 
+<li id="mm"><a href="/Links/programming.html#general">General Sites</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/soft.html" class="p7PMtrg">Software</a> 
+<ul> 
+<li id="mm"><a href="/Links/soft.html#cfd">Fluid Dynamics</a></li> 
+<li id="mm"><a href="/Links/soft.html#mesh">Mesh Generation</a></li> 
+<li id="mm"><a href="/Links/soft.html#vis">Visualization</a></li> 
+<li id="mm"><a href="/Links/soft.html#com">Commercial CFD Codes</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/hard.html" class="p7PMtrg">Hardware</a> 
+<ul> 
+<li id="mm"><a href="/Links/hard.html#benchmarks">Benchmarks</a></li> 
+<li id="mm"><a href="/Links/hard.html#news">News and Reviews</a></li> 
+<li id="mm"><a href="/Links/hard.html#vendors">Hardware Vendors</a></li> 
+<li id="mm"><a href="/Links/hard.html#cloud">Clouds</a></li>
+<li id="mm"><a href="/Links/hard.html#clusters">Clusters</a></li>
+<li id="mm"><a href="/Links/hard.html#gpgpu">GPGPU</a></li> 
+<li id="mm"><a href="/Links/hard.html#misc">Misc</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/refs.html" class="p7PMtrg">References</a> 
+<ul> 
+<li id="mm"><a href="/Links/refs.html#validation">Validation Cases</a></li> 
+<li id="mm"><a href="/Links/refs.html#airfoils">Airfoils</a></li> 
+<li id="mm"><a href="/Links/refs.html#consts">Material Properties</a></li> 
+<li id="mm"><a href="/Links/refs.html#glossaries">Glossaries</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/finddocs.html" class="p7PMtrg">Finding Documents</a> 
+<ul> 
+<li id="mm"><a href="/Links/finddocs.html#preprints">Preprints Online</a></li> 
+<li id="mm"><a href="/Links/finddocs.html#papers">Papers &amp; Reports</a></li> 
+<li id="mm"><a href="/Links/finddocs.html#books">Books</a></li> 
+<li id="mm"><a href="/Links/finddocs.html#journals">Journals</a></li> 
+<li id="mm"><a href="/Links/finddocs.html#publ">Publishers</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/tools.html" class="p7PMtrg">Online Tools</a> 
+<ul> 
+<li id="mm"><a href="/Links/tools.html#units">Unit Converters</a></li> 
+<li id="mm"><a href="/Links/tools.html#calcs">Calculators</a></li> 
+<li id="mm"><a href="/Links/tools.html#yplus">y+ Estimation</a></li> 
+<li id="mm"><a href="/Links/tools.html#compressible">Compressible Flow</a></li>
+<li id="mm"><a href="/Links/tools.html#heat">Heat Transfer</a></li> 
+<li id="mm"><a href="/Links/tools.html#airfoils">Airfoil Generators</a></li> 
+<li id="mm"><a href="/Links/tools.html#simple">Simple Cases</a></li> 
+<li id="mm"><a href="/Links/tools.html#combustion">Combustion</a></li> 
+<li id="mm"><a href="/Links/tools.html#proc">Cycles &amp; Processes</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/onlinedocs.html" class="p7PMtrg">Online Books &amp; Guides</a> 
+<ul> 
+<li id="mm"><a href="/Links/onlinedocs.html#cfdintros">CFD Introductions</a></li> 
+<li id="mm"><a href="/Links/onlinedocs.html#books">Books</a></li> 
+<li id="mm"><a href="/Links/onlinedocs.html#bestpractice">Best Practice Guidelines</a></li> 
+<li id="mm"><a href="/Links/onlinedocs.html#aero">Fluid &amp; Aero Dynamics</a></li>
+<li id="mm"><a href="/Links/onlinedocs.html#seminars">Seminars</a></li>  
+<li id="mm"><a href="/Links/onlinedocs.html#encyclopedias">Encyclopedias</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/cmc.html" class="p7PMtrg">Social Media</a> 
+<ul> 
+<li id="mm"><a href="/Links/cmc.html#forums">Discussion Forums</a></li> 
+<li id="mm"><a href="/Links/cmc.html#blogs">Blogs</a></li> 
+<li id="mm"><a href="/Links/cmc.html#twitter">Twitter</a></li> 
+<li id="mm"><a href="/Links/cmc.html#youtube">YouTube</a></li> 
+<li id="mm"><a href="/Links/cmc.html#facebook">Facebook</a></li> 
+<li id="mm"><a href="/Links/cmc.html#linkedin">LinkedIn</a></li>
+<li id="mm"><a href="/Links/cmc.html#podcasts">Podcasts</a></li>
+<li id="mm"><a href="/Links/cmc.html#usenet">Usenet Newsgroups</a></li> 
+<li id="mm"><a href="/Links/cmc.html#mail_lists">Mailing Lists</a></li> 
+<li id="mm"><a href="/Links/cmc.html#chat">Chats</a></li> 
+<li id="mm"><a href="/Links/cmc.html#news">News</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/education.html" class="p7PMtrg">Education</a> 
+<ul> 
+<li id="mm"><a href="/Links/education.html#cfdprogrammes">CFD Programmes</a></li> 
+<li id="mm"><a href="/Links/education.html#onlinelabs">Online Labs</a></li> 
+<li id="mm"><a href="/Links/education.html#onlinecourses">Online Courses</a></li> 
+<li id="mm"><a href="/Links/education.html#coursematerial">Course Material</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/jobs.html" class="p7PMtrg">Jobs</a> 
+<ul> 
+<li id="mm"><a href="/Links/jobs.html#cfd">CFD Job Resources</a></li> 
+<li id="mm"><a href="/Links/jobs.html#orgs">Companies &amp; Orgs.</a></li> 
+<li id="mm"><a href="/Links/jobs.html#general">General Resources</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/events.html" class="p7PMtrg">Events</a> 
+<ul> 
+<li id="mm"><a href="/Links/events.html#calendars">Event Calendars</a></li> 
+<li id="mm"><a href="/Links/events.html#orgs">Specific Organizations</a></li> 
+<li id="mm"><a href="/Links/events.html#vendors">Vendor Events Lists</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/misc.html" class="p7PMtrg">Misc</a> 
+<ul> 
+<li id="mm"><a href="/Links/misc.html#picts">Pictures and Movies</a></li> 
+<li id="mm"><a href="/Links/misc.html#fun">Fun</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Links/links.html">Links to Links</a></li>
+<li id="mm"><a href="/Links/suggest_link.php">Suggest New Link</a></li>
+<li id="mm"><a href="/Links/about.html">About this Section</a></li>
+</ul> 
+</li> 
+<li id="mm"><a href="/Jobs/" class="p7PMtrg">Jobs</a> 
+<ul> 
+<li id="mm"><a href="/Jobs/jobform.php">Post Job Ad</a></li> 
+<li id="mm"><a href="/Jobs/listjobs.php">List All Jobs</a></li> 
+<li id="mm"><a href="/Jobs/listjobs.php" class="p7PMtrg">List Jobs by Type</a> 
+<ul><li id="mm"><a href="/Jobs/listjobs.php?category=Job%20in%20Industry">Job in Industry (15)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?category=Job%20in%20Academia">Job in Academia (28)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?category=Contract%20Work">Contract Work (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?category=PostDoc%20Position">PostDoc Position (11)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?category=PhD%20Studentship">PhD Studentship (32)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?category=Internship">Internship (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?category=Diploma%20Work">Diploma Work (2)</a></li>
+</ul> 
+</li> 
+<li id="mm"><a href="/Jobs/listbyloc.php" class="p7PMtrg">List Jobs by Location</a> 
+<ul> 
+<li id="mm"><a href="/Jobs/listjobs.php?continent=Asia" class="p7PMtrg">Asia</a>
+<ul>
+<li id="mm"><a href="/Jobs/listjobs.php?country=China">China (12)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Hong%20Kong">Hong Kong (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=India">India (11)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Saudi%20Arabia">Saudi Arabia (2)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=South%20Korea">South Korea (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Taiwan">Taiwan (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Turkey">Turkey (1)</a></li>
+</ul></li>
+<li id="mm"><a href="/Jobs/listjobs.php?continent=Europe" class="p7PMtrg">Europe</a>
+<ul>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Belgium">Belgium (3)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=France">France (5)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Germany">Germany (4)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Ireland">Ireland (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Italy">Italy (2)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Netherlands">Netherlands (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Norway">Norway (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Russian%20Federation">Russian Federation (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Slovenia">Slovenia (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Spain">Spain (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Sweden">Sweden (1)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=United%20Kingdom">United Kingdom (7)</a></li>
+</ul></li>
+<li id="mm"><a href="/Jobs/listjobs.php?continent=North%20America" class="p7PMtrg">North America</a>
+<ul>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Canada">Canada (2)</a></li>
+<li id="mm"><a href="/Jobs/listjobs.php?country=United%20States">United States (30)</a></li>
+</ul></li>
+<li id="mm"><a href="/Jobs/listjobs.php?continent=Oceania" class="p7PMtrg">Oceania</a>
+<ul>
+<li id="mm"><a href="/Jobs/listjobs.php?country=Australia">Australia (1)</a></li>
+</ul></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Jobs/search.php">Search Job Ads</a></li> 
+</ul> 
+</li> 
+<!--
+<li id="mm"><a href="/Books/" class="p7PMtrg">Books</a>
+<ul>
+<li id="mm"><a href="/Books/browse_subjects.php">Browse Categories</a></li>
+<li id="mm"><a href="/Books/search_books.php">Search</a></li>
+<li id="mm"><a href="/Books/book_form.php">Submit a Book</a></li>
+<li id="mm"><a href="/Books/help.php">Help</a></li>
+</ul>
+</li> 
+-->
+<li id="mm"><a href="/Events/" class="p7PMtrg">Events</a>
+<ul> 
+<li id="mm"><a href="/Events/post.php">Post New Event</a></li> 
+<li id="mm"><a href="/Events/list.php">List All Events</a></li> 
+<li id="mm"><a href="/Events/list.php" class="p7PMtrg">List Events by Type</a> 
+<ul>
+<li id="mm"><a href="/Events/list.php?event_type_id=1">Conferences (8)</a></li>
+<li id="mm"><a href="/Events/list.php?event_type_id=3">Courses (29)</a></li>
+<li id="mm"><a href="/Events/list.php?event_type_id=4">Seminars (1)</a></li>
+<li id="mm"><a href="/Events/list.php?event_type_id=6">Online Events (7)</a></li>
+</ul> 
+</li> 
+<li id="mm"><a href="/Events/listbyloc.php" class="p7PMtrg">List Events by Location</a>
+<ul> 
+<li id="mm"><a href="/Events/list.php?continent=Africa" class="p7PMtrg">Africa</a>
+<ul>
+<li id="mm"><a href="/Events/list.php?event_country_id=74">Algeria (1)</a></li>
+</ul>
+</li>
+<li id="mm"><a href="/Events/list.php?continent=Asia" class="p7PMtrg">Asia</a>
+<ul>
+<li id="mm"><a href="/Events/list.php?event_country_id=25">India (15)</a></li>
+</ul>
+</li>
+<li id="mm"><a href="/Events/list.php?continent=Europe" class="p7PMtrg">Europe</a>
+<ul>
+<li id="mm"><a href="/Events/list.php?event_country_id=3">Austria (2)</a></li>
+<li id="mm"><a href="/Events/list.php?event_country_id=20">Germany (2)</a></li>
+<li id="mm"><a href="/Events/list.php?event_country_id=31">Italy (1)</a></li>
+</ul>
+</li>
+<li id="mm"><a href="/Events/list.php?continent=North%20America" class="p7PMtrg">North America</a>
+<ul>
+<li id="mm"><a href="/Events/list.php?event_country_id=62">United States (5)</a></li>
+</ul></li>
+ 
+</ul> 
+</li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Tools/" class="p7PMtrg">Tools</a> 
+<ul>
+<li id="mm"><a href="javascript:void(window.open('/Tools/rpncalc.html','RPNCalc','status=0,scrollbars=0,resizable=0,width=400,height=365'))">RPN Calculator</a></li>
+<li id="mm"><a href="javascript:void(window.open('/Tools/scicalc.html','SciCalc','status=0,scrollbars=0,resizable=0,width=250,height=345'))">Scientific Calculator</a></li>
+<li id="mm"><a href="/Tools/unit_conversion.php">Unit Conversion</a></li> 
+<li id="mm"><a href="/Tools/yplus.php">Y+ Estimation</a></li> 
+<li id="mm"><a href="/Tools/turbulence.php">Turbulence Properties</a></li> 
+</ul> 
+</li> 
+<li id="mm"><a href="/Feeds/" class="p7PMtrg">Feeds</a>
+<ul>
+<li id="mm"><a href="/Feeds/news.php">News</a></li>
+<li id="mm"><a href="/Feeds/blogs.php">Blogs</a></li>
+<li id="mm"><a href="/Feeds/vendors.php">Vendors</a></li>
+<li id="mm"><a href="/Feeds/jobs.php">Jobs</a></li>
+<li id="mm"><a href="/Feeds/journals.php">Journals</a></li>
+</ul> 
+</li> 
+<li id="mm"><a href="/About/" class="p7PMtrg">About</a> 
+<ul>
+<li id="mm"><a href="/About/">About CFD Online</a></li>
+<li id="mm"><a href="/About/privacy_policy.php">Privacy Policy</a></li>
+<li id="mm"><a href="/About/contacts.php">Contacts &amp; Feedback</a></li>
+<li id="mm"><a href="/Stats/">Web Server Statistics</a></li> 
+<li id="mm"><a href="/About/sponsors.php">List of Sponsors</a></li> 
+<li id="mm"><a href="/About/sponsor.php">Advertising on this Site</a></li> 
+</ul> 
+</li> 
+
+<li id="mm"><a href="/Search/">Search</a></li> 
+<!--[if lte IE 6]><style>#p7PMnav a{height:1em;}#p7PMnav li{height:1em;}#p7PMnav ul li{float:left;clear:both;width:100%}</style><![endif]--> 
+<!--[if IE 6]><style>#p7PMnav ul li{clear:none;}</style><![endif]--> 
+</ul> 
+</td> 
+</tr> 
+</table> 
+
+<div id="pageContent">
+   <div id="pmmcrumb2"><a id="pmmcr" href="/">Home</a> &gt; <a href="/Wiki/">Wiki</a> &gt; 
+Skin friction coefficient</div>
+</div>
+<!-- CFD Online addition above -->
+<div id="globalWrapper">
+<div id="column-content"><div id="content" >
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Skin friction coefficient</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From CFD-Wiki</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+		<!-- start content -->
+<p>The skin friction coefficient, <img class="tex" alt="C_f" src="/W/images/math/2/4/2/24228862db8fc3eb45bae9cd050265e4.png" />, is defined by:
+</p>
+<dl><dd><img class="tex" alt="C_f \equiv \frac{\tau_w}{\frac{1}{2} \, \rho \, U_\infty^2}" src="/W/images/math/c/3/a/c3ac95d4c9ad0f7351bf50c53683312e.png" />
+</dd></dl>
+<p>Where <img class="tex" alt="\tau_w" src="/W/images/math/d/7/c/d7c908c53c2f5d44953f77b249730a0d.png" /> is the local <a href="/Wiki/Wall_shear_stress" title="Wall shear stress">wall shear stress</a>, <img class="tex" alt="\rho" src="/W/images/math/f/7/f/f7f177957cf064a93e9811df8fe65ed1.png" /> is the fluid density and <img class="tex" alt="U_\infty" src="/W/images/math/6/2/6/626590c22593ff1d0eecefeff6cb7992.png" /> is the free-stream velocity (usually taken ouside of the boundary layer or at the inlet).
+</p><p>For a turbulent boundary layer several approximation formulas for the local skin friction for a flat plate can be used:
+</p><p>1/7 power law: 
+</p>
+<dl><dd><img class="tex" alt="C_f = 0.0576 Re_x^{-1/5} \quad \mbox{for} \quad 5 \cdot 10^5 &lt; Re_x &lt; 10^7 " src="/W/images/math/a/0/4/a04bb9cfde2535ee12bafb8230eed400.png" />
+</dd></dl>
+<p>1/7 power law with experimental calibration (equation 21.12 in <a href="#References">[3]</a>):
+</p>
+<dl><dd><img class="tex" alt="C_f = 0.0592 \, Re_x^{-1/5} \quad \mbox{for} \quad 5 \cdot 10^5 &lt; Re_x &lt; 10^7" src="/W/images/math/5/3/4/53455b667f87de1932b13bfad7b236cc.png" /> 
+</dd></dl>
+<p>Schlichting (equation 21.16 footnote in <a href="#References">[3]</a>)
+</p>
+<dl><dd><img class="tex" alt="C_f = [ 2 \, log_{10}(Re_x) - 0.65 ] ^{-2.3} \quad \mbox{for} \quad Re_x &lt; 10^9 " src="/W/images/math/c/a/4/ca4dc895c55260e9f9244eb0465141c8.png" />
+</dd></dl>
+<p>Schultz-Grunov (equation 21.19a in <a href="#References">[3]</a>):
+</p>
+<dl><dd><img class="tex" alt="C_f = 0.370 \, [ log_{10}(Re_x) ]^{-2.584} " src="/W/images/math/3/4/4/34492727370cbb6fa12a571f65a1388a.png" />
+</dd></dl>
+<p>(equation 38 in <a href="#References">[1]</a>):
+</p>
+<dl><dd><img class="tex" alt="1.0/C_f^{1/2} = 1.7 + 4.15 \, log_{10} (Re_x \, C_f) " src="/W/images/math/6/b/7/6b722dfedfa5a84f978143275e6b2a7e.png" />
+</dd></dl>
+<p>The following skin friction formulas are extracted from <a href="#References">[2]</a>,p.19. Proper reference needed:
+</p><p>Prandtl (1927):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.074 \, Re_x^{-1/5} " src="/W/images/math/b/e/a/bea62c567d91d316e017752dec56bc17.png" />
+</dd></dl>
+<p>Telfer (1927):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.34 \, Re_x^{-1/3} + 0.0012 " src="/W/images/math/c/c/1/cc11e99bae6e80d3e892d84d94ace25c.png" />
+</dd></dl>
+<p>Prandtl-Schlichting (1932):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.455 \, [ log_{10}(Re_x)]^{-2.58} " src="/W/images/math/5/4/6/5467f64b95b410d418b2e5257ccfa842.png" />
+</dd></dl>
+<p>Schoenherr (1932):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.0586 \, [ log_{10}(Re_x \, C_f )]^{-2} " src="/W/images/math/0/5/1/0517e14ad72f9e240a9d537681a68a5f.png" />
+</dd></dl>
+<p>Schultz-Grunov (1940):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.427 \, [ log_{10}(Re_x) - 0.407]^{-2.64} " src="/W/images/math/b/d/0/bd032a44b9b3e0efb177d2095586e673.png" />
+</dd></dl>
+<p>Kempf-Karman (1951):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.055 \, Re_x^{-0.182} " src="/W/images/math/e/0/4/e045707973b63e33c9478a7a6fa600db.png" />
+</dd></dl>
+<p>Lap-Troost (1952):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.0648 \, [log_{10}(Re_x \, C_f^{0.5})-0.9526]^{-2} " src="/W/images/math/a/0/6/a06720ea4112676a8dfddf461267897c.png" />
+</dd></dl>
+<p>Landweber (1953):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.0816 \, [log_{10}(Re_x) - 1.703]^{-2} " src="/W/images/math/e/3/2/e3275545f39f2589f820703fbf0e68c5.png" />
+</dd></dl>
+<p>Hughes (1954):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.067 \, [log_{10}(Re_x) - 2 ] ^{-2} " src="/W/images/math/b/a/5/ba51e1668f07b0b204e2661190ccab3b.png" />
+</dd></dl>
+<p>Wieghard (1955):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.52 \, [log_{10}(Re_x)] ^{-2.685} " src="/W/images/math/4/1/d/41d1dfc26b81ccb5141b86a44dc0e35e.png" />
+</dd></dl>
+<p>ITTC (1957):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.075 \, [log_{10}(Re_x) - 2 ] ^{-2} " src="/W/images/math/2/8/1/281d43a24f91a71bc89512dfd0e1e13c.png" />
+</dd></dl>
+<p>Gadd (1967):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.0113 \, [log_{10}(Re_x) - 3.7 ] ^{-1.15} " src="/W/images/math/9/7/f/97f180fb245f42f56db823a0433fe82a.png" />
+</dd></dl>
+<p>Granville (1977):
+</p>
+<dl><dd><img class="tex" alt=" C_f = 0.0776 \, [log_{10}(Re_x) - 1.88 ] ^{-2} + 60 \, Re_x^{-1} " src="/W/images/math/f/8/5/f858769b3aa5a365c535e5bf15745491.png" />
+</dd></dl>
+<p>Date Turnock (1999):
+</p>
+<dl><dd><img class="tex" alt=" C_f = [4.06 \, log_{10}(Re_x \, C_f) - 0.729]^{-2} " src="/W/images/math/d/c/3/dc3b85bc6b0d869a9a558363fd876afb.png" />
+</dd></dl>
+<p><br />
+</p>
+<h2> <span class="mw-headline" id="References"> References </span></h2>
+<ol><li> <b>von Karman, Theodore (1934)</b>, "Turbulence and Skin Friction", J. of the Aeronautical Sciences, Vol. 1, No 1, 1934, pp. 1-20.
+</li><li> <b>Lazauskas, Leo Victor (2005)</b>, "Hydrodynamics of Advanced High-Speed Sealift Vessels", Master Thesis, University of Adelaide, Australia (<a href="http://digital.library.adelaide.edu.au/dspace/bitstream/2440/37729/1/02whole.pdf" class="external text" rel="nofollow">download</a>).
+</li><li> <b>Schlichting, Hermann (1979)</b>, <i>Boundary Layer Theory</i>, <a href="/Wiki/Special:BookSources/0070553343" class="internal mw-magiclink-isbn">ISBN 0-07-055334-3</a>, 7th Edition.
+</li></ol>
+<h2> <span class="mw-headline" id="To_do"> To do </span></h2>
+<p><i>Someone should add more data about total skin friction approximations, Prandtl-Schlichting skin-friction formula, and the Karman-Schoenherr equation.</i>
+<i>Add proper reference for equations in [2]</i>
+</p><p><br />
+</p>
+<div class="boilerplate metadata" id="stub"><table cellpadding="0" cellspacing="0" style="background-color: transparent;"><tr><td><i>This article is a <a href="/Wiki/CFD-Wiki:Stub" title="CFD-Wiki:Stub"> stub</a>, a short article which needs to be improved. You can help by <a href="https://www.cfd-online.com/W/index.php?title=Skin_friction_coefficient&amp;action=edit" class="external text" rel="nofollow">expanding it</a></i>.</td></tr></table></div>
+<p><br />
+Edit:
+With regards to the 1/7th power law, in Schlichtings book (see references) the formula describing Cf over a flat plate , without pressure gradient, is Cf=0.0725*Re^(-1/5) and it is valid between 5x10^5&lt;Re&lt;10^7  with the assumption of the flow being turbulent from the leading edge (page 639)
+This is found in page 638 , formula 21.11.
+</p><p>Taking into account that the flow is laminar for the first part of the plate and using Blasius's equeation, after providing corrective some corrective factors , Schlichting in page 644 states:
+Cf=0.02666*Rl^(-0.139) 
+There should be a separation between local and total skin friction on the plate.grizos
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 280/1000000
+Post-expand include size: 945/2097152 bytes
+Template argument size: 408/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key cfd-online-wiki:pcache:idhash:2175-0!0!0!!en!2!edit=0 and timestamp 20250916220106 -->
+<div class="printfooter">
+Retrieved from "<a href="https://www.cfd-online.com/Wiki/Skin_friction_coefficient">https://www.cfd-online.com/Wiki/Skin_friction_coefficient</a>"</div>
+		<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="/Wiki/Special:Categories" title="Special:Categories">Category</a>: <span dir='ltr'><a href="/Wiki/Category:Stubs" title="Category:Stubs">Stubs</a></span></div></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/Wiki/Skin_friction_coefficient" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="/W/index.php?title=Talk:Skin_friction_coefficient&amp;action=edit&amp;redlink=1" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="/W/index.php?title=Skin_friction_coefficient&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="/W/index.php?title=Skin_friction_coefficient&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>My wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/W/index.php?title=Special:UserLogin&amp;returnto=Skin_friction_coefficient" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li>
+			</ul>
+		</div>
+	</div>
+<!-- Removed for CFD Online below
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/Images/cfdonline_logo.gif);" href="/Wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+Removed for CFD Online above -->
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class='generated-sidebar portlet' id='p-wiki_navigation'>
+		<h5>wiki navigation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-mainpage"><a href="/Wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+				<li id="n-portal"><a href="/Wiki/CFD-Wiki:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li>
+				<li id="n-recentchanges"><a href="/Wiki/Special:RecentChanges" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-help"><a href="/Wiki/Help:Contents" title="The place to find out">Help</a></li>
+				<li id="n-wikiforum"><a href="http://www.cfd-online.com/Forums/cfd-wiki/">Wiki forum</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">wiki search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/W/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input id="searchInput" title="Search CFD-Wiki" accesskey="f" type="search" name="search" />
+				<input type='submit' name="go" class="searchButton" id="searchGoButton"	value="Go" title="Go to a page with this exact name if exists" />&nbsp;
+				<input type='submit' name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>wiki toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/Wiki/Special:WhatLinksHere/Skin_friction_coefficient" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="/Wiki/Special:RecentChangesLinked/Skin_friction_coefficient" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="/Wiki/Special:SpecialPages" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="/W/index.php?title=Skin_friction_coefficient&amp;printable=yes" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="/W/index.php?title=Skin_friction_coefficient&amp;oldid=23458" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="/W/skins/common/images/poweredby_mediawiki_88x31.png" height="31" width="88" alt="Powered by MediaWiki" /></a></div>
+	<div id="f-copyrightico"><a href="http://www.gnu.org/copyleft/fdl.html"><img src="/W/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a></div>
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 14 January 2016, at 12:14.</li>
+		<li id="viewcount">This page has been accessed 320,388 times.</li>
+		<li id="copyright">Content is available under <a href="/Wiki/CFD-Wiki:Copyrights" title="CFD-Wiki:Copyrights">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="/Wiki/CFD-Wiki:Privacy_policy" title="CFD-Wiki:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/Wiki/CFD-Wiki:About" title="CFD-Wiki:About">About CFD-Wiki</a></li>
+		<li id="disclaimer"><a href="/Wiki/CFD-Wiki:General_disclaimer" title="CFD-Wiki:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<script>if (window.runOnloadHook) runOnloadHook();</script>
+<!-- Served in 0.331 secs. --></body></html>
