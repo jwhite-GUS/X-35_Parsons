@@ -100,5 +100,5 @@ artifacts/
 # *.xlsx
 
 # ---- Generated outputs ----
-results/
+results/*
 !results/README.md
