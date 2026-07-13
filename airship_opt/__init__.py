@@ -1,8 +1,8 @@
 """
-Airship Hull Shape Optimization - Parsons' Method Implementation
+Airship hull geometry and bounded optimization research tools.
 
-A modular package for airship hull shape optimization using Parsons' eight-parameter
-method with piecewise polynomial geometry and Young's drag formulation.
+The package retains Parsons' eight-parameter geometry. Its current drag path is
+an explicitly selected screening surrogate, not a faithful Young/Parsons solver.
 
 Main interfaces:
 - geometry: solve_forebody, solve_midbody, solve_tail, evaluate_shape
@@ -14,7 +14,15 @@ Main interfaces:
 
 from .types import Params, Config, Result, Coefs
 from .geometry import solve_forebody, solve_midbody, solve_tail, evaluate_shape, build_coefs, sample_profile
-from .aero import volume, compute_drag
+from .aero import (
+    CONSTANT_EDGE_SURROGATE_V1,
+    SURROGATE_MODEL_STATUS,
+    compute_drag,
+    laminar_flat_plate_benchmark,
+    surrogate_claim_metadata,
+    surrogate_static_boundary,
+    volume,
+)
 from .objective import objective, constraint_penalties, peak_penalty
 from .optimize import nelder_mead
 from .io_viz import save_result, load_result
@@ -23,7 +31,9 @@ __version__ = "1.0.0"
 __all__ = [
     "Params", "Config", "Result", "Coefs",
     "solve_forebody", "solve_midbody", "solve_tail", "evaluate_shape", "build_coefs", "sample_profile",
-    "volume", "compute_drag",
+    "CONSTANT_EDGE_SURROGATE_V1", "SURROGATE_MODEL_STATUS",
+    "volume", "compute_drag", "laminar_flat_plate_benchmark",
+    "surrogate_claim_metadata", "surrogate_static_boundary",
     "objective", "constraint_penalties", "peak_penalty",
     "nelder_mead",
     "save_result", "load_result"

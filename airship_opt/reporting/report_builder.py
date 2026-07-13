@@ -11,7 +11,7 @@ import base64
 import json
 import csv
 import textwrap
-from typing import Dict, List
+from typing import Any, Dict, List, Tuple
 
 def _b64(path: Path) -> str:
     """Convert a file to base64 encoding."""
@@ -37,7 +37,17 @@ def _fig_paths(base_dir: Path) -> List[Path]:
     figs = base_dir / "figures"
     return sorted([p for p in figs.glob("*.png")]) if figs.exists() else []
 
-def _kv(k: str, v: any) -> str:
+
+def _coefficient_boundary(res: Dict) -> Tuple[Dict, object]:
+    """Return the machine claim flag and only then expose a screening value."""
+    claim = res.get("coefficient_claim") or res.get("meta", {}).get(
+        "coefficient_claim", {}
+    )
+    if claim.get("hull_evidence_eligible") is not False:
+        return claim, "WITHHELD — missing explicit non-evidence flag"
+    return claim, res.get("screening_coefficient", res.get("cd"))
+
+def _kv(k: str, v: Any) -> str:
     """Format a key-value pair as an HTML table row."""
     v = "N/A" if v is None else v
     return f"<tr><th style='text-align:left;padding-right:12px'>{k}</th><td>{v}</td></tr>"
@@ -59,16 +69,28 @@ def build_html(base_dir: Path) -> str:
     med = meta.get("medium", {})
     spd = meta.get("speed", {})
     ren = meta.get("reynolds", {})
+    model = meta.get("drag_model", {})
+    claim, screening_value = _coefficient_boundary(res)
 
     # derive ReV if missing
     ReV = ren.get("ReV")
-    if ReV is None and spd.get("U") is not None and med.get("nu") is not None and res.get("volume") is not None:
-        ReV = float(spd["U"]) * (res["volume"] ** (1/3)) / float(med["nu"])
+    if (
+        ReV is None
+        and spd.get("U") is not None
+        and spd.get("reference_length_m") is not None
+        and med.get("nu") is not None
+        and res.get("volume") is not None
+    ):
+        physical_volume = float(res["volume"]) * float(spd["reference_length_m"]) ** 3
+        ReV = float(spd["U"]) * physical_volume ** (1 / 3) / float(med["nu"])
 
     # Parameters table
-    params = {k: res.get(k) for k in ("rn","fr","xm","k","Xi","n","S","t")}
+    saved_params = res.get("params", {})
+    params = {k: saved_params.get(k) for k in ("rn","fr","xm","k","Xi","n","S","t")}
+    envelope = claim.get("validity_envelope", {})
+    benchmark = claim.get("closed_form_benchmark", {})
     kpis = {
-        "cd_te": res.get("cd"),  # note: cd in result.json
+        "screening_coefficient": screening_value,
         "volume": res.get("volume"),
         "objective": res.get("objective"),
         "iterations": res.get("meta", {}).get("iterations")
@@ -93,9 +115,16 @@ th,td {{ padding: 4px 6px; border-bottom: 1px solid #eee; }}
 .meta {{ font-size: 13px; color: #444; }}
 .code {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }}
 .card {{ padding: 12px; border: 1px solid #eee; border-radius: 12px; }}
+.not-evidence {{ padding: 12px; border: 3px solid #a00; background: #fff4f4; color: #700; font-weight: 700; }}
 </style></head><body>
 <h1>Run Summary</h1>
 <div class="meta">{base_dir}</div>
+
+<div class="section not-evidence">
+HULL EVIDENCE ELIGIBLE: {str(claim.get("hull_evidence_eligible", "UNCLASSIFIED")).lower()}<br>
+This run is a same-model, same-flow software screening account. It is not a
+validated Parsons coefficient or a vehicle-design result.
+</div>
 
 <div class="section card">
 <h2>Flow Conditions</h2>
@@ -104,15 +133,25 @@ th,td {{ padding: 4px 6px; border-bottom: 1px solid #eee; }}
 {_kv("Density (kg/m³)", med.get("rho"))}
 {_kv("Viscosity ν (m²/s)", med.get("nu"))}
 {_kv("Speed U (m/s)", spd.get("U"))}
+{_kv("Reference length L (m)", spd.get("reference_length_m"))}
 {_kv("Reynolds (Re_V)", ReV)}
+{_kv("Drag model", model.get("id"))}
+{_kv("Model status", model.get("status"))}
+{_kv("Hull evidence eligible", claim.get("hull_evidence_eligible", "UNCLASSIFIED"))}
+{_kv("Physical magnitude validated", claim.get("physical_magnitude_validated", False))}
+{_kv("Envelope assessment", envelope.get("assessment", "UNCLASSIFIED"))}
+{_kv("Envelope Re_L", envelope.get("Re_L", "N/A"))}
+{_kv("Envelope Re_L bounds", f'{envelope.get("Re_L_min", "N/A")} to {envelope.get("Re_L_max", "N/A")}')}
+{_kv("Flat-plate arithmetic benchmark passed", benchmark.get("passed", "UNCLASSIFIED"))}
+{_kv("Benchmark relative error", benchmark.get("relative_error", "N/A"))}
 </table>
 </div>
 
 <div class="section card">
 <h2>KPIs</h2>
 <table class="kv">
-{_kv("Drag Coefficient (cd_te)", kpis["cd_te"])}
-{_kv("Volume (L³)", kpis["volume"])}
+{_kv("Screening coefficient (NOT hull evidence)", kpis["screening_coefficient"])}
+{_kv("Nondimensional volume (V/L³)", kpis["volume"])}
 {_kv("Objective", kpis["objective"])}
 {_kv("Iterations", kpis["iterations"])}
 </table>
@@ -160,10 +199,19 @@ def build_markdown(base_dir: Path) -> str:
     med = meta.get("medium", {})
     spd = meta.get("speed", {})
     ren = meta.get("reynolds", {})
+    model = meta.get("drag_model", {})
+    claim, screening_value = _coefficient_boundary(res)
     
     ReV = ren.get("ReV")
-    if ReV is None and spd.get("U") and med.get("nu") and res.get("volume"):
-        ReV = float(spd["U"]) * (res["volume"] ** (1/3)) / float(med["nu"])
+    if (
+        ReV is None
+        and spd.get("U") is not None
+        and spd.get("reference_length_m") is not None
+        and med.get("nu") is not None
+        and res.get("volume") is not None
+    ):
+        physical_volume = float(res["volume"]) * float(spd["reference_length_m"]) ** 3
+        ReV = float(spd["U"]) * physical_volume ** (1 / 3) / float(med["nu"])
         
     lines = ["# Run Summary",
              f"`{base_dir}`",
@@ -173,18 +221,31 @@ def build_markdown(base_dir: Path) -> str:
              f"- Density (kg/m³): {med.get('rho','N/A')}",
              f"- Viscosity ν (m²/s): {med.get('nu','N/A')}",
              f"- Speed U (m/s): {spd.get('U','N/A')}",
+             f"- Reference length L (m): {spd.get('reference_length_m','N/A')}",
              f"- Reynolds (Re_V): {ReV if ReV is not None else 'N/A'}",
+             f"- Drag model: {model.get('id','N/A')}",
+             f"- Model status: {model.get('status','N/A')}",
+             f"- Hull evidence eligible: {claim.get('hull_evidence_eligible','UNCLASSIFIED')}",
+             f"- Physical magnitude validated: {claim.get('physical_magnitude_validated',False)}",
+             f"- Envelope assessment: {claim.get('validity_envelope',{}).get('assessment','UNCLASSIFIED')}",
+             f"- Envelope Re_L: {claim.get('validity_envelope',{}).get('Re_L','N/A')}",
+             f"- Envelope Re_L bounds: {claim.get('validity_envelope',{}).get('Re_L_min','N/A')} to {claim.get('validity_envelope',{}).get('Re_L_max','N/A')}",
+             f"- Flat-plate arithmetic benchmark passed: {claim.get('closed_form_benchmark',{}).get('passed','UNCLASSIFIED')}",
+             f"- Benchmark relative error: {claim.get('closed_form_benchmark',{}).get('relative_error','N/A')}",
+             "",
+             "## Claim Boundary",
+             "**NOT HULL EVIDENCE.** This is a same-model, same-flow software screening account.",
              "",
              "## KPIs",
-             f"- Drag Coefficient (cd_te): {res.get('cd','N/A')}",
-             f"- Volume (L³): {res.get('volume','N/A')}",
+             f"- Screening coefficient (NOT hull evidence): {screening_value}",
+             f"- Nondimensional volume (V/L³): {res.get('volume','N/A')}",
              f"- Objective: {res.get('objective','N/A')}",
              f"- Iterations: {res.get('meta',{}).get('iterations','N/A')}",
              "",
              "## Parameters"]
              
     for k in ("rn","fr","xm","k","Xi","n","S","t"):
-        lines.append(f"- {k}: {res.get(k,'N/A')}")
+        lines.append(f"- {k}: {res.get('params',{}).get(k,'N/A')}")
         
     lines += ["",
               "## Figures"]

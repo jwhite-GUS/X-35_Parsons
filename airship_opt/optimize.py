@@ -11,6 +11,7 @@ from copy import deepcopy
 from .types import Params, Config, Result, IterRecord
 from .geometry import build_coefs
 from .objective import objective
+from .aero import CONSTANT_EDGE_SURROGATE_V1, surrogate_claim_metadata
 
 def nelder_mead(
     x0: List[float],
@@ -32,6 +33,15 @@ def nelder_mead(
     Returns:
         Result object with optimized parameters and metadata
     """
+    if (
+        cfg.drag_model == CONSTANT_EDGE_SURROGATE_V1
+        and not cfg.allow_screening_optimization
+    ):
+        raise ValueError(
+            "Screening optimization is disabled by default. Set "
+            "allow_screening_optimization=True only for same-model, same-flow "
+            "relative software screening; outputs remain ineligible as hull evidence."
+        )
     # Simplex init (regular)
     n = len(x0)
     simplex = [x0[:]]
@@ -48,7 +58,7 @@ def nelder_mead(
 
     def eval_obj(x: List[float]) -> Tuple[float, float, float]:
         J, meta = objective(as_params(x), cfg)
-        return J, float(meta['CD']), float(meta['V'])
+        return J, float(meta['screening_coefficient']), float(meta['V'])
 
     # Score initial simplex
     scores = [eval_obj(x) for x in simplex]
@@ -109,13 +119,24 @@ def nelder_mead(
 
     x_best = simplex[0]
     J_best, CD_best, V_best = scores[0]
+    best_params = Params(*x_best)
+    coefficient_claim = surrogate_claim_metadata(
+        best_params, cfg, cfg.medium, V_best
+    )
     res = Result(
-        params=Params(*x_best),
-        coefs=build_coefs(Params(*x_best)),
+        params=best_params,
+        coefs=build_coefs(best_params),
         cd=CD_best,
         volume=V_best,
         objective=J_best,
         history=history,
-        meta={"iterations": it},
+        meta={
+            "iterations": it,
+            "drag_model": cfg.drag_model,
+            "model_status": coefficient_claim["model_status"],
+            "reference_length_m": cfg.reference_length_m,
+            "Re_V_input": cfg.Re_V,
+            "coefficient_claim": coefficient_claim,
+        },
     )
     return res

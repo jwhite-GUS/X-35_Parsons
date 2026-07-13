@@ -16,6 +16,10 @@ from pathlib import Path
 # Add the parent directory to the path so we can import airship_opt
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
+from airship_opt.aero import (
+    CONSTANT_EDGE_SURROGATE_V1,
+    surrogate_static_boundary,
+)
 from airship_opt.types import Params, Config
 from airship_opt.optimize import nelder_mead
 from airship_opt.io_viz import save_result, prepare_run_dirs, update_meta, write_manifest
@@ -40,7 +44,12 @@ def main():
     ap.add_argument("--results-root", default="results", help="Root directory for results")
     ap.add_argument("--run-name", default="x35", help="Name of this optimization run")
     ap.add_argument("--tag", help="Optional tag/label for this run")
-    ap.add_argument("--vol-target", type=float, required=True, help="Target volume")
+    ap.add_argument(
+        "--vol-target",
+        type=float,
+        required=True,
+        help="Target nondimensional volume V_bar = V/L^3",
+    )
     ap.add_argument("--max-iter", type=int, default=400, help="Maximum iterations")
     ap.add_argument("--w-volume", type=float, default=1.0, help="Volume penalty weight")
     ap.add_argument("--w-shape", type=float, default=1.0, help="Shape penalty weight")
@@ -51,9 +60,38 @@ def main():
                    help="Working fluid (default: water, matching Parsons' regime)")
     ap.add_argument("--rho", type=float, help="Fluid density [kg/m^3] (overrides default)")
     ap.add_argument("--nu", type=float, help="Kinematic viscosity [m^2/s] (overrides default)")
-    ap.add_argument("--U", type=float, help="Free-stream speed [m/s] (compute Re_V)")
-    ap.add_argument("--ReV", type=float, help="Volume-based Reynolds number Re_V as defined by Parsons/Young (override U)")
+    flow = ap.add_mutually_exclusive_group(required=True)
+    flow.add_argument("--U", type=float, help="Free-stream speed [m/s] (requires --reference-length-m)")
+    flow.add_argument("--ReV", type=float, help="Direct volume-based Reynolds number Re_V")
+    ap.add_argument(
+        "--reference-length-m",
+        type=float,
+        help="Physical reference length L [m], required when deriving Re_V from --U",
+    )
+    ap.add_argument(
+        "--drag-model",
+        required=True,
+        choices=[CONSTANT_EDGE_SURROGATE_V1],
+        help="Explicit screening model; no validated Parsons default exists",
+    )
+    ap.add_argument(
+        "--allow-screening-optimization",
+        action="store_true",
+        help=(
+            "Explicitly allow same-model, same-flow relative surrogate ranking. "
+            "The saved coefficient remains machine-flagged as NOT hull evidence."
+        ),
+    )
     args = ap.parse_args()
+    if args.U is not None and args.reference_length_m is None:
+        ap.error("--U requires --reference-length-m so normalized volume can be dimensionalized")
+    if args.ReV is not None and args.reference_length_m is not None:
+        ap.error("--reference-length-m is unnecessary with direct --ReV; choose one flow route")
+    if not args.allow_screening_optimization:
+        ap.error(
+            "--allow-screening-optimization is required: the surrogate may rank "
+            "only same-model, same-flow software candidates and is not hull evidence"
+        )
 
     # Set up results directory structure
     results_root = os.getenv("RESULTS_ROOT", args.results_root)
@@ -75,6 +113,11 @@ def main():
     # Log run configuration
     logging.info(f"Run directory: {run_dirs['base'].absolute()}")
     logging.info(f"Starting optimization run: {args.run_name}")
+    logging.warning(
+        "Using %s: a dimensionally closed screening surrogate, not a "
+        "source-faithful Parsons solver or vehicle-validation model.",
+        args.drag_model,
+    )
     
     # Set random seed if provided
     if args.seed is not None:
@@ -96,7 +139,10 @@ def main():
         w_volume=args.w_volume,
         w_shape=args.w_shape,
         speed_U=args.U,
-        Re_V=args.ReV
+        Re_V=args.ReV,
+        reference_length_m=args.reference_length_m,
+        drag_model=args.drag_model,
+        allow_screening_optimization=args.allow_screening_optimization,
     )
 
     bounds = [
@@ -129,11 +175,20 @@ def main():
             "nu": medium.nu
         },
         "speed": {
-            "U": args.U
+            "U": args.U,
+            "reference_length_m": args.reference_length_m,
         },
         "reynolds": {
             "ReV": args.ReV
-        }
+        },
+        "drag_model": {
+            "id": args.drag_model,
+            "status": "screening-surrogate-open",
+        },
+        "coefficient_claim": {
+            **surrogate_static_boundary(),
+            "screening_optimization_acknowledged": True,
+        },
     }
     update_meta(run_dirs["base"], config)
     
@@ -141,8 +196,14 @@ def main():
     res = nelder_mead(list(p0.__dict__.values()), bounds, cfg, max_iter=args.max_iter)
 
     # Compute ReV if needed
-    from airship_opt.objectives.utils import compute_ReV
-    ReV_value = compute_ReV(U=args.U, V=res.volume, nu=medium.nu, ReV=args.ReV)
+    from airship_opt.objectives.utils import resolve_reynolds
+    ReV_value, ReL_value = resolve_reynolds(
+        U=args.U,
+        V_bar=res.volume,
+        nu=medium.nu,
+        ReV=args.ReV,
+        reference_length_m=args.reference_length_m,
+    )
 
     # Update meta with computed ReV
     meta = {
@@ -152,11 +213,18 @@ def main():
             "nu": medium.nu
         },
         "speed": {
-            "U": args.U if getattr(args, "U", None) is not None else None
+            "U": args.U if getattr(args, "U", None) is not None else None,
+            "reference_length_m": args.reference_length_m,
         },
         "reynolds": {
-            "ReV": float(ReV_value)
-        }
+            "ReV": float(ReV_value),
+            "ReL": float(ReL_value),
+        },
+        "drag_model": {
+            "id": args.drag_model,
+            "status": "screening-surrogate-open",
+        },
+        "coefficient_claim": res.meta["coefficient_claim"],
     }
     update_meta(run_dirs["base"], meta)
     
@@ -179,7 +247,12 @@ def main():
     write_manifest(run_dirs["base"])
     
     logging.info(f"Optimization complete")
-    logging.info(f"CD={res.cd:.6f} | V={res.volume:.6f} | J={res.objective:.6e}")
+    logging.info(
+        "screening_coefficient=%0.6f | hull_evidence_eligible=false | V=%0.6f | J=%0.6e",
+        res.cd,
+        res.volume,
+        res.objective,
+    )
     logging.info(f"Iterations: {res.meta.get('iterations', 'unknown')}")
     logging.info(f"Elapsed time: {elapsed:.2f} seconds")
     

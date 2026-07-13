@@ -1,5 +1,15 @@
-# Airship Hull Shape Optimization - Program Specification
-## Faithful Replication of Parsons' Work
+# Historical Airship Hull Shape Optimization Specification
+## Superseded intent: replicate Parsons' work
+
+> **HISTORICAL, SUPERSEDED REQUIREMENTS — NOT AN IMPLEMENTATION CLAIM.** This
+> document records the repository's original intent. Direct source inspection
+> on 2026-07-13 established that the retained drag calculation did not reproduce
+> Young R&M 1874 or Parsons (1974), and its stated `(1 + H_TE)` terminal factor
+> is not the cited equation. The executable package now fails closed around an
+> explicitly named screening surrogate. The governing current decision is
+> [`docs/DRAG-MODEL-DECISION-20260713.md`](docs/DRAG-MODEL-DECISION-20260713.md).
+> Every completion checkbox and numerical acceptance statement below is an
+> unverified historical aspiration unless re-established under that decision.
 
 ### 1. Project Overview
 
@@ -8,7 +18,7 @@
 **Key Features**:
 - Eight-parameter hull shape parameterization
 - Piecewise polynomial shape generation (forebody, midbody, tail)
-- Boundary layer drag calculation using Young's formula
+- Historical proposal: boundary-layer drag calculation attributed to Young
 - Nelder-Mead optimization to minimize drag coefficient
 - Volume constraint enforcement via soft penalties
 - Comprehensive constraint validation
@@ -100,7 +110,7 @@
 - **Output**: Volume in cubic units (normalized)
 
 **Function**: `compute_drag_coefficient(fore_coefs, mid_coefs, tail_coefs, xm, Xi, fr, Re_vol=1e7, transition_point=None)`
-- **Purpose**: Calculate drag coefficient using Young's formula
+- **Historical proposed purpose**: calculate a coefficient attributed to Young
 - **Method**: Boundary layer momentum thickness integration with analytic slopes
 - **Flow Model**: Laminar flow to transition point, turbulent thereafter
 - **Arc Length**: ds = √(1 + Y'²)dx using analytic derivatives
@@ -206,7 +216,7 @@ original_params = [0.7573, 4.8488, 0.5888, 0.1711, 0.7853, 0.6473, 2.2867, 0.173
 #### 6.1 Primary Outputs
 
 1. **Optimized Parameters**: Eight parameter values for minimum drag
-2. **Drag Coefficient**: Minimum achievable drag coefficient
+2. **Historical target metric**: minimum value of the proposed coefficient
 3. **Volume**: Calculated hull volume (should match target)
 4. **Shape Data**: Arrays of X, Y coordinates for plotting
 
@@ -291,7 +301,7 @@ for X in X_points:
 **Volume Integration**:
 - `=0.5*PI()*(Y_prev^2 + Y_current^2)*delta_X`
 
-**Drag Coefficient**:
+**Historical proposed coefficient**:
 - `=4*PI()*r_TE*theta_TE/(V^(2/3))*(1+H_TE)`
 
 **Arc Length**:
@@ -346,4 +356,6 @@ Y, Yp = evaluate_shape(X, ...)
 ds = sqrt(1 + Yp²) * dX
 ```
 
-This specification provides a complete framework for implementing Parsons' airship hull shape optimization method, ensuring faithful replication of the original work while maintaining code quality and validation standards.
+This superseded specification recorded an intended framework for Parsons-style
+hull optimization. It did not establish source fidelity or physical validity;
+the current decision record and executable claim boundary govern both.

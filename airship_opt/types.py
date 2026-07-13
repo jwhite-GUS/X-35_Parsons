@@ -46,6 +46,9 @@ class Config:
     transition_point: float = None  # laminar-turbulent transition point (None = auto)
     speed_U: float = None    # free-stream speed [m/s], used to compute Re_V
     Re_V: float = None       # volume-based Reynolds number (if provided directly)
+    reference_length_m: float = None  # physical L [m], required when deriving Re_V from speed
+    drag_model: str = None   # must be selected explicitly; no source-faithful default exists
+    allow_screening_optimization: bool = False  # explicit permission for relative surrogate ranking only
 
 @dataclass
 class IterRecord:

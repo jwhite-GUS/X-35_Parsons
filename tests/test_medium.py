@@ -7,7 +7,7 @@ Tests medium creation and Reynolds number calculations.
 import pytest
 import math
 from airship_opt.media import make_air, make_water, make_custom
-from airship_opt.objectives.utils import compute_ReV
+from airship_opt.objectives.utils import compute_ReV, resolve_reynolds
 
 def test_default_media():
     """Test default medium creation and properties."""
@@ -54,3 +54,41 @@ def test_reynolds_calculation():
     # Case C: Missing both U and ReV should raise error
     with pytest.raises(ValueError):
         compute_ReV(U=None, V=0.1, nu=1e-5, ReV=None)
+
+
+def test_normalized_geometry_requires_reference_length_for_speed_route():
+    """Speed cannot dimensionalize V/L^3 without a physical L."""
+    with pytest.raises(ValueError, match="reference-length"):
+        resolve_reynolds(
+            U=2.0,
+            V_bar=0.02,
+            nu=1.0e-6,
+            ReV=None,
+            reference_length_m=None,
+        )
+
+
+def test_direct_and_dimensionalized_reynolds_routes_agree():
+    V_bar = 0.02
+    U = 2.0
+    L = 3.0
+    nu = 1.0e-6
+    expected_ReV = U * L * V_bar ** (1.0 / 3.0) / nu
+
+    derived = resolve_reynolds(
+        U=U,
+        V_bar=V_bar,
+        nu=nu,
+        ReV=None,
+        reference_length_m=L,
+    )
+    direct = resolve_reynolds(
+        U=None,
+        V_bar=V_bar,
+        nu=nu,
+        ReV=expected_ReV,
+        reference_length_m=None,
+    )
+
+    assert math.isclose(derived[0], expected_ReV)
+    assert math.isclose(derived[1], direct[1])

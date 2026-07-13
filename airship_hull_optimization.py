@@ -1,12 +1,10 @@
-"""
-Airship Hull Shape Optimization - Faithful Replication of Parsons' Work
+"""HISTORICAL, NON-EXECUTABLE prototype retained for forensic comparison.
 
-This script implements an eight-parameter airship hull shape optimization system
-that replicates Parsons' original work using piecewise polynomial equations and
-Young's drag formula.
-
-Author: Implementation based on Parsons' original work
-Date: 2024
+Direct source inspection on 2026-07-13 disproved this file's former claim of a
+faithful Parsons/Young implementation. Its drag calculation is dimensionally
+and methodologically invalid and must not produce coefficients. Use the
+``airship_opt`` package's explicit screening boundary for software experiments;
+no source-faithful Parsons solver exists in this repository yet.
 """
 
 import math
@@ -332,8 +330,7 @@ def compute_volume(fore_coefs: List[float], mid_coefs: List[float],
 def compute_drag_coefficient(fore_coefs: List[float], mid_coefs: List[float], 
                            tail_coefs: List[float], xm: float, Xi: float, fr: float, 
                            Re_vol: float = RE_VOL, transition_point: Optional[float] = None) -> Tuple[float, float]:
-    """
-    Compute drag coefficient C_D using a boundary-layer method (Young's formula).
+    """Refuse the superseded calculation preserved below for source audit.
     
     Args:
         fore_coefs: Forebody polynomial coefficients
@@ -348,6 +345,11 @@ def compute_drag_coefficient(fore_coefs: List[float], mid_coefs: List[float],
     Returns:
         Tuple (CD, volume) - drag coefficient and volume
     """
+    raise RuntimeError(
+        "Legacy drag calculation is quarantined: it is not Young R&M 1874 or "
+        "Parsons (1974). Use airship_opt with an explicit screening model; "
+        "its output remains ineligible as hull evidence."
+    )
     # Volume for normalization and to determine fluid viscosity (for constant Re_vol)
     volume = compute_volume(fore_coefs, mid_coefs, tail_coefs, xm, Xi, fr)
     
@@ -412,7 +414,7 @@ def compute_drag_coefficient(fore_coefs: List[float], mid_coefs: List[float],
     # Assume a shape factor at the trailing edge (turbulent boundary layer ~1.4):
     H_TE = 1.4
     
-    # Compute drag coefficient using Young's formula:
+    # Superseded terminal arithmetic preserved only for forensic comparison:
     CD = (4 * math.pi * r_TE * theta / (volume ** (2.0/3.0))) * (1 + H_TE)
     
     return CD, volume

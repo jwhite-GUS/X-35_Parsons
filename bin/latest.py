@@ -24,6 +24,7 @@ import os
 from pathlib import Path
 import re
 import sys
+from typing import Dict, Optional
 
 RESULTS_ROOT = Path(os.getenv("RESULTS_ROOT") or "results").resolve()
 TS_DIR_RE = re.compile(r"^\d{8}-\d{6}(?:[_-]\d+)?__")  # matches our UTC stamp prefix
@@ -31,7 +32,7 @@ TS_DIR_RE = re.compile(r"^\d{8}-\d{6}(?:[_-]\d+)?__")  # matches our UTC stamp p
 def _is_run_dir(p: Path) -> bool:
     return (p / "artifacts" / "result.json").exists()
 
-def _resolve_pointer(slug: str) -> Path | None:
+def _resolve_pointer(slug: str) -> Optional[Path]:
     """
     Resolve latest pointer. Returns:
       - Path to run folder, or
@@ -72,7 +73,7 @@ def _resolve_pointer(slug: str) -> Path | None:
 
     return None
 
-def _discover_latest_run(slug: str) -> Path | None:
+def _discover_latest_run(slug: str) -> Optional[Path]:
     """
     If no pointer exists, scan results root for timestamped dirs matching
     '*__{slug}' and choose the newest by directory name sort (UTC prefix).
@@ -92,7 +93,7 @@ def _discover_latest_run(slug: str) -> Path | None:
     candidates.sort()
     return candidates[-1]
 
-def resolve_latest(slug: str) -> dict[str, str] | None:
+def resolve_latest(slug: str) -> Optional[Dict[str, str]]:
     """
     Resolve to canonical locations. Returns dict with:
       base, artifacts_json, figures_dir, tables_dir, logs_dir, meta_dir, manifest

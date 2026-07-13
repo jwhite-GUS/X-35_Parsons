@@ -14,6 +14,7 @@ import os
 import warnings
 import csv
 from pathlib import Path
+from typing import Tuple
 
 # Add the parent directory to the path so we can import airship_opt
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
@@ -28,6 +29,16 @@ except ImportError:
 
 from airship_opt.types import Params
 from airship_opt.geometry import build_coefs, evaluate_shape
+
+
+def _screening_boundary(data: dict) -> Tuple[dict, object]:
+    """Expose the coefficient only when its non-evidence flag is explicit."""
+    claim = data.get("coefficient_claim") or data.get("meta", {}).get(
+        "coefficient_claim", {}
+    )
+    if claim.get("hull_evidence_eligible") is not False:
+        return claim, "WITHHELD — missing explicit non-evidence flag"
+    return claim, data.get("screening_coefficient", data.get("cd"))
 
 def _resolve_result_path(path: Path) -> Path:
     """
@@ -69,7 +80,7 @@ def _resolve_result_path(path: Path) -> Path:
     # Case 4: Legacy file or other
     return path
 
-def resolve_output_dirs(result_path: Path) -> tuple[Path, Path]:
+def resolve_output_dirs(result_path: Path) -> Tuple[Path, Path]:
     """
     Resolve output directories for plots and tables based on result path.
     
@@ -198,6 +209,14 @@ def create_summary_table(data: dict, tables_dir: Path):
     medium = meta.get("medium", {"name": "unknown", "rho": None, "nu": None})
     speed = meta.get("speed", {"U": None})
     Re_V = meta.get("reynolds", {}).get("ReV")
+    claim, screening_value = _screening_boundary(data)
+    envelope = claim.get("validity_envelope", {})
+    benchmark = claim.get("closed_form_benchmark", {})
+    screening_display = (
+        f"{screening_value:.6f}"
+        if isinstance(screening_value, (int, float))
+        else str(screening_value)
+    )
     
     summary = f"""
 Airship Hull Optimization Results
@@ -221,7 +240,13 @@ Parameters:
   t (tail radius):     {params['t']:.4f}
 
 Results:
-  Drag Coefficient:    {data['cd']:.6f}
+  Screening only:      {screening_display}
+  Hull evidence:       {str(claim.get('hull_evidence_eligible', 'UNCLASSIFIED')).lower()}
+  Physical validity:   {claim.get('physical_magnitude_validated', False)}
+  Envelope assessment: {envelope.get('assessment', 'UNCLASSIFIED')}
+  Re_L:                 {envelope.get('Re_L', 'N/A')}
+  Benchmark passed:     {benchmark.get('passed', 'UNCLASSIFIED')}
+  Benchmark rel. error: {benchmark.get('relative_error', 'N/A')}
   Volume:              {data['volume']:.6f}
   Objective:           {data['objective']:.6e}
   Iterations:          {meta.get('iterations', 'unknown')}
@@ -251,7 +276,16 @@ Geometry:
         ["U", f"{speed['U']:.2f}" if speed['U'] else "N/A", "m/s"],
         ["ReV", f"{Re_V:.3e}" if Re_V else "N/A", "dimensionless"],
         # Results
-        ["cd_te", f"{data['cd']:.6f}", "dimensionless"],
+        ["screening_coefficient", screening_display, "dimensionless; NOT hull evidence"],
+        ["hull_evidence_eligible", str(claim.get("hull_evidence_eligible", "UNCLASSIFIED")).lower(), "boolean"],
+        ["physical_magnitude_validated", str(claim.get("physical_magnitude_validated", False)).lower(), "boolean"],
+        ["validity_envelope.assessment", envelope.get("assessment", "UNCLASSIFIED"), "classification"],
+        ["validity_envelope.Re_L", envelope.get("Re_L", "N/A"), "dimensionless"],
+        ["validity_envelope.Re_L_min", envelope.get("Re_L_min", "N/A"), "dimensionless"],
+        ["validity_envelope.Re_L_max", envelope.get("Re_L_max", "N/A"), "dimensionless"],
+        ["closed_form_benchmark.id", benchmark.get("id", "UNCLASSIFIED"), "identifier"],
+        ["closed_form_benchmark.passed", str(benchmark.get("passed", "UNCLASSIFIED")).lower(), "boolean"],
+        ["closed_form_benchmark.relative_error", benchmark.get("relative_error", "N/A"), "dimensionless"],
         ["volume", f"{data['volume']:.6f}", "L³"],
         ["objective", f"{data['objective']:.6e}", "dimensionless"],
         ["iterations", str(meta.get('iterations', 'unknown')), "count"],

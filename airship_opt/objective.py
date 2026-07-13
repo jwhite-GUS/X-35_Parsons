@@ -84,7 +84,10 @@ def peak_penalty(params: Params, cfg: Config) -> float:
 
 def objective(params: Params, cfg: Config) -> Tuple[float, Dict]:
     """
-    Objective function to minimize (drag coefficient) with embedded constraints as penalties.
+    Screening objective with embedded volume and shape penalties.
+
+    Under the only available model, the leading term is a software-screening
+    coefficient, not a validated physical drag coefficient.
     
     Args:
         params: Hull parameters
@@ -109,7 +112,8 @@ def objective(params: Params, cfg: Config) -> Tuple[float, Dict]:
     
     # Metadata for debugging and analysis
     meta = {
-        'CD': CD,
+        'screening_coefficient': CD,
+        'hull_evidence_eligible': False,
         'V': V,
         'vol_err': vol_err,
         **pens

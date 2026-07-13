@@ -5,6 +5,7 @@ This script runs basic tests to verify the implementation works correctly.
 """
 
 import numpy as np
+import pytest
 from airship_hull_optimization import (
     solve_forebody, solve_midbody, solve_tail, evaluate_shape,
     compute_volume, compute_drag_coefficient, objective_function
@@ -65,9 +66,8 @@ def test_volume_calculation():
     
     print()
 
-def test_drag_calculation():
-    """Test drag coefficient calculation."""
-    print("Testing drag calculation...")
+def test_legacy_drag_calculation_is_quarantined():
+    """The disproven monolith must not emit a coefficient."""
     
     # Test parameters
     rn, fr, xm, k, Xi, n, S, t = 0.7573, 4.8488, 0.5888, 0.1711, 0.7853, 0.6473, 2.2867, 0.1731
@@ -76,41 +76,16 @@ def test_drag_calculation():
     mid_coefs = solve_midbody(fr, xm, Xi, n, k, S, t)
     tail_coefs = solve_tail(fr, xm, Xi, n, S, t)
     
-    CD, volume = compute_drag_coefficient(fore_coefs, mid_coefs, tail_coefs, xm, Xi, fr)
-    print(f"Drag coefficient: {CD:.6f}")
-    print(f"Volume: {volume:.6f}")
-    
-    # Drag coefficient should be positive and reasonable
-    assert CD > 0, f"Drag coefficient should be positive, got {CD}"
-    assert CD < 1, f"Drag coefficient should be less than 1, got {CD}"
-    print("✓ Drag calculation reasonable")
-    
-    print()
+    with pytest.raises(RuntimeError, match="Legacy drag calculation is quarantined"):
+        compute_drag_coefficient(fore_coefs, mid_coefs, tail_coefs, xm, Xi, fr)
 
-def test_objective_function():
-    """Test objective function."""
-    print("Testing objective function...")
+def test_legacy_objective_cannot_bypass_drag_quarantine():
+    """The old optimizer must fail through the same source-integrity gate."""
     
     # Test with valid parameters
     valid_params = [0.7573, 4.8488, 0.5888, 0.1711, 0.7853, 0.6473, 2.2867, 0.1731]
-    result = objective_function(valid_params)
-    print(f"Objective function result: {result:.6f}")
-    
-    # Should return a reasonable objective value (drag + penalties)
-    assert result > 0, f"Objective function should return positive value, got {result}"
-    assert result < 1e6, f"Objective function should not return penalty for valid params, got {result}"
-    print("✓ Valid parameters accepted")
-    
-    # Test with invalid parameters (should return penalty)
-    invalid_params = [0.7573, 1.0, 0.5888, 0.1711, 0.7853, 0.6473, 2.2867, 0.1731]  # fr too small
-    result = objective_function(invalid_params)
-    print(f"Objective function with invalid params: {result:.6f}")
-    
-    # Should return penalty
-    assert result > 1e6, f"Objective function should return penalty for invalid params, got {result}"
-    print("✓ Invalid parameters penalized")
-    
-    print()
+    with pytest.raises(RuntimeError, match="Legacy drag calculation is quarantined"):
+        objective_function(valid_params)
 
 def test_continuity():
     """Test continuity at segment boundaries."""

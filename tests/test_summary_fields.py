@@ -30,8 +30,16 @@ def test_summary_fields(tmp_path):
     config_json = meta_dir / "config.json"
     config = {
         "medium": {"name": "water_20C", "rho": 998.2, "nu": 1.004e-6},
-        "speed": {"U": 2.0},
-        "reynolds": {"ReV": 1.5e6}
+        "speed": {"U": 2.0, "reference_length_m": 1.0},
+        "reynolds": {"ReV": 1.5e6},
+        "drag_model": {
+            "id": "constant-edge-velocity-surrogate-v1",
+            "status": "screening-surrogate-open",
+        },
+        "coefficient_claim": {
+            "hull_evidence_eligible": False,
+            "physical_magnitude_validated": False,
+        },
     }
     config_json.write_text(json.dumps(config))
     
@@ -58,3 +66,6 @@ def test_summary_fields(tmp_path):
     assert "nu" in data["medium"]
     assert "speed" in data 
     assert "reynolds" in data
+    assert data["drag_model"]["status"] == "screening-surrogate-open"
+    assert data["coefficient_claim"]["hull_evidence_eligible"] is False
+    assert data["coefficient_claim"]["physical_magnitude_validated"] is False

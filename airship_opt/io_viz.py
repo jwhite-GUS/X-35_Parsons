@@ -183,6 +183,7 @@ def save_result(res: Result, path: Union[str, Path]) -> Path:
         except Exception:
             pass
         
+    coefficient_claim = res.meta.get("coefficient_claim", {})
     data: Dict[str, Any] = {
         "params": asdict(res.params),
         "coefs": {
@@ -192,10 +193,20 @@ def save_result(res: Result, path: Union[str, Path]) -> Path:
             "xm":   res.coefs.xm,
             "Xi":   res.coefs.Xi,
         },
+        "screening_coefficient": res.cd,
         "cd": res.cd,
+        "cd_alias_status": "deprecated alias; see screening_coefficient and coefficient_claim",
+        "coefficient_claim": coefficient_claim,
         "volume": res.volume,
         "objective": res.objective,
-        "history": [asdict(h) for h in res.history],
+        "history": [
+            {
+                **asdict(h),
+                "screening_coefficient": h.cd,
+                "hull_evidence_eligible": False,
+            }
+            for h in res.history
+        ],
         "meta": {**res.meta, **meta},  # Merge result meta with config meta
     }
     path.parent.mkdir(parents=True, exist_ok=True)

@@ -1,15 +1,18 @@
-# Airship Hull Shape Optimization (Parsons'' Method)
+# Airship Hull Geometry and Drag-Screening Research
 
-Python tooling for reproducing Parsons'' eight-parameter hull optimization. The
-project models the hull geometry with piecewise polynomials, evaluates drag
-with the Young/Parsons formulation, and searches the design space with a
-Nelder–Mead solver. Command-line utilities handle running optimizations,
-plotting results, and packaging reports.
+Python tooling for studying Parsons' eight-parameter hull geometry and bounded
+optimization workflows. The geometry and search machinery are available. The
+current drag path is an explicitly selected, constant-edge-velocity screening
+surrogate; it is **not** a source-faithful Young/Parsons solver and must not be
+used as vehicle-design evidence. See
+[`docs/DRAG-MODEL-DECISION-20260713.md`](docs/DRAG-MODEL-DECISION-20260713.md).
 
 ## Key Features
 - Eight-parameter hull definition (`rn`, `fr`, `xm`, `k`, `Xi`, `n`, `S`, `t`)
 - Piecewise polynomial geometry with continuous slope and curvature
-- Young''s boundary-layer drag model with explicit volume-based Reynolds number
+- Explicit volume-based Reynolds and reference-length accounting
+- Fail-closed drag-model selection with model identity in run metadata
+- Dimensionally closed screening surrogate for software/sensitivity work
 - Configurable penalties on volume and shape for robust convergence
 - Timestamped results directories with manifests, plots, and reports
 - Optional HTML/Markdown/PDF report generation driven by run metadata
@@ -38,10 +41,13 @@ pip install -r requirements.txt
 working fluid or Reynolds-number specification.
 
 ```bash
-# Baseline run in water at 20 °C, deriving Re_V from the speed U
+# Baseline run in water at 20 Â°C, deriving Re_V from the speed U
 python bin/run_opt.py \
   --vol-target 0.0195144 \
   --U 2.0 \
+  --reference-length-m 1.0 \
+  --drag-model constant-edge-velocity-surrogate-v1 \
+  --allow-screening-optimization \
   --medium water \
   --run-name x35_water
 
@@ -49,23 +55,31 @@ python bin/run_opt.py \
 python bin/run_opt.py \
   --vol-target 0.0195144 \
   --ReV 1e7 \
+  --drag-model constant-edge-velocity-surrogate-v1 \
+  --allow-screening-optimization \
   --medium air \
   --run-name x35_air
 ```
 
 Important flags:
-- `--vol-target` (required): desired displaced volume
+- `--vol-target` (required): desired nondimensional volume `V/LÂ³`
 - `--medium {water,air,custom}`: working fluid; `--rho` / `--nu` override defaults
-- `--U` or `--ReV`: compute or prescribe the volume-based Reynolds number
+- `--U` with `--reference-length-m`, or `--ReV`: derive or prescribe the
+  volume-based Reynolds number
+- `--drag-model constant-edge-velocity-surrogate-v1`: explicit opt-in to the
+  OPEN screening model; there is no validated default
+- `--allow-screening-optimization`: second, explicit acknowledgement that the
+  optimizer output is relative software screening and remains machine-flagged
+  `hull_evidence_eligible=false`
 - `--max-iter`, `--w-volume`, `--w-shape`: tune the optimization process
 - `--results-root`: change the output root (defaults to `results/`)
 
 Each run creates a UTC-stamped directory under `results/` containing:
-- `artifacts/result.json` – serialized optimization output
-- `figures/` and `tables/` – generated plots and CSV summaries
-- `logs/run.log` – detailed console log
-- `meta/config.json` – captured CLI arguments, git hash, and environment info
-- `manifest.json` and `reports/` – verification hashes and rendered summaries
+- `artifacts/result.json` â€“ serialized optimization output
+- `figures/` and `tables/` â€“ generated plots and CSV summaries
+- `logs/run.log` â€“ detailed console log
+- `meta/config.json` â€“ captured CLI arguments, git hash, and environment info
+- `manifest.json` and `reports/` â€“ verification hashes and rendered summaries
 
 A pointer file or symlink named `latest__<run-name>` is refreshed after every
 run to make automation easier.
@@ -97,13 +111,19 @@ embedded metadata, KPIs, and plots.
 
 ## Programmatic Usage
 ```python
-from airship_opt import Params, Config, nelder_mead
+from airship_opt import CONSTANT_EDGE_SURROGATE_V1, Params, Config, nelder_mead
 from airship_opt.media import make_water
 
 params = Params(rn=0.7573, fr=4.8488, xm=0.5888, k=0.1711,
                 Xi=0.7853, n=0.6473, S=2.2867, t=0.1731)
 medium = make_water()
-cfg = Config(vol_target=0.0195144, medium=medium, speed_U=2.0)
+cfg = Config(
+    vol_target=0.0195144,
+    medium=medium,
+    Re_V=1.0e7,
+    drag_model=CONSTANT_EDGE_SURROGATE_V1,
+    allow_screening_optimization=True,
+)
 
 bounds = [
     (0.2, 1.5),  # rn
@@ -118,6 +138,12 @@ bounds = [
 result = nelder_mead(list(params.__dict__.values()), bounds, cfg)
 ```
 
+Every saved result carries the model identifier, an explicit non-evidence
+flag, the evaluated Reynolds envelope, and a numerical comparison with the
+closed-form laminar flat-plate integral. The benchmark checks the retained
+integration arithmetic only. It does not validate the magnitude of the hull
+screening coefficient.
+
 ## Project Layout
 ```
 airship_opt/
@@ -126,7 +152,7 @@ airship_opt/
   geometry.py            # Hull polynomials and samplers
   aero.py                # Volume and drag calculations
   objective.py           # Objective and penalty terms
-  optimize.py            # Nelder–Mead driver
+  optimize.py            # Nelderâ€“Mead driver
   io_viz.py              # Result I/O, manifests, latest pointer mgmt
   utils.py               # Shared helpers
   media/                 # Fluid property models (air, water, custom)
@@ -153,28 +179,37 @@ tests/
 pytest
 ```
 
-## Reference Library
-A rich set of source documents is tracked in `references/` to support physics
-updates and validation:
+## Source status
+
+The repository retains the actual 1974 Parsons, Goodson, and Goldschmied
+article and the correct Young R&M 1874 body-of-revolution report. A previously
+indexed `NASA-CR-132692.pdf` was found by direct title-page inspection to be an
+unrelated Chin/Barbero cable-mount program guide; it has been renamed and
+excluded from the drag lineage. The retained Young R&M 1838 is the aerofoil
+precursor, not the body-of-revolution source cited by Parsons.
+
+Additional documents in `references/` support future physics reconstruction
+and validation:
 
 - Wind-tunnel baselines: NACA TR-138 (1923) and TR-291 (1928) for C-class
   airship hull drag; NACA TR-1271 and TN-3478 for minimum-wave-drag boattails.
-- Core drag theory: Young (1939) R&M 1838 and NASA CR-132692.
+- Core lineage: Parsons, Goodson, and Goldschmied (1974); Young (1939) R&M
+  1874; R&M 1838 retained only as the cited aerofoil precursor.
 - Transition and correlations: MIT boundary-layer notes, MIT empirical
   transition notes (Michel correlation), and the CFD-Online skin-friction
-  compendium covering Prandtl, Prandtl–Schlichting, Granville, and ITTC fits.
-- Modern CFD: NASA 2012 study on Sears–Haack transition at Mach 2.
+  compendium covering Prandtl, Prandtlâ€“Schlichting, Granville, and ITTC fits.
+- Modern CFD: NASA 2012 study on Searsâ€“Haack transition at Mach 2.
 - Environment and tooling: U.S. Standard Atmosphere 1976, CoolProp Python
   wrapper docs, SciPy `optimize.minimize` reference, and pymoo algorithm guide.
 
 See `references/README.md` for full provenance and download links.
 
 ## References
-- Parsons, J. S. (1974). *An Analysis of the Aerodynamic Characteristics of
-  Several Bodies of Revolution Including the Effects of Viscous Flow*. NASA
-  CR-132692.
-- Young, A. D. (1939). *The Calculation of the Profile Drag of Aerofoils*.
-  ARC R&M 1838.
+- Parsons, J. S., Goodson, R. E., & Goldschmied, F. R. (1974). *Shaping of
+  Axisymmetric Bodies for Minimum Drag in Incompressible Flow*. Journal of
+  Hydronautics, 8(3), 100â€“107.
+- Young, A. D. (1939). *The Calculation of the Total and Skin Friction Drags
+  of Bodies of Revolution at Zero Incidence*. ARC R&M 1874.
 - Zahm, A. F., Smith, R. H., & Hill, G. C. (1923). *The Drag of C Class
   Airship Hull with Varying Length of Cylindric Midships*. NACA TR-138.
 - Zahm, A. F., Smith, R. H., & Louden, F. A. (1928). *Drag of C-Class Airship
